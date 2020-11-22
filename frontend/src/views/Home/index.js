@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import SidePanel from '../SidePanel'
-import ChatListSection from '../ChatListSection'
-import ChatMessageSection from '../ChatMessageSection'
+import SidePanel from '../SidePanel';
+import ChatListSection from '../ChatListSection';
+import ChatMessageSection from '../ChatMessageSection';
+import ChatRecoSection from '../ChatAccessorySection';
 import { ChatProvider } from '../../providers/ChatProvider';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +36,7 @@ const MainChat = () => {
                 <SidePanel />
                 <ChatListSection />
                 <ChatMessageSection />
+                <ChatRecoSection />
             </div>
         </ChatProvider>
     );

@@ -15,9 +15,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
         //width: "65px",
+        backgroundColor: "#f3f6fb",
         flex: 1,
         //borderRadius: "10px",
-        padding: theme.spacing(5),
+        padding: theme.spacing(4),
         display: "flex",
         flexDirection: "column",
     },

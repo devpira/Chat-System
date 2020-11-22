@@ -110,25 +110,25 @@ io.use(async (socket, next) => {
     //         //res.send(error);
     //     });
 
-    // fetch("https://over.localhost.achievers.com/api/v2/user/my_info", {
-    //     method: 'GET',
-    //     headers: {
-    //         Authorization: `Bearer ${socket.token}`,
-    //     },
-    // })
-    //     .then(function (response) {
-    //         console.log("response:", response.data)
-    //         //return response.json();
-    //     })
-    //     .then(function (response) {
-    //         console.log('server response', response);
-    //         // res.send(response);
-    //     })
-    //     .catch(function (error) {
-    //         console.error(error)
-    //         //res.send(error);
-    //     });
-    //  grpcResolver(
+    fetch("https://over.localhost.achievers.com/api/v5/announcements", {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${socket.token}`,
+        },
+    })
+        .then(function (response) {
+            console.log("response:", response.data)
+            return response.json();
+        })
+        .then(function (response) {
+            console.log('server response', response);
+            // res.send(response);
+        })
+        .catch(function (error) {
+            console.error(error)
+            //res.send(error);
+        });
+    //  grpcResolver( 
     //     {
     //         grpcClient: userClient,
     //         grpcFunction: 'GetUser',

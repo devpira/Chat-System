@@ -2,9 +2,10 @@ import queryString from 'query-string';
 import buildUrl from 'build-url';
 import React, { useEffect, useState, createContext } from 'react';
 import LoadingScreen from '../LoadingScreen'
+import axios from 'axios';
 
 export const AuthContext = createContext();
-const axios = require('axios')
+
 
 export const AuthProvider = ({ children }) => {
     const [oAuthToken, setOAuthToken] = useState(null);
