@@ -1,0 +1,21 @@
+{
+  "name": "socketio-server",
+  "version": "1.0.0",
+  "description": "The socket io server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "devpira",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "isomorphic-fetch": "^2.2.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
