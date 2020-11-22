@@ -1,0 +1,19 @@
+{
+  "name": "peer-server",
+  "version": "1.0.0",
+  "description": "peer.js server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "devpira",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "peer": "^0.6.0"
+  }
+}
