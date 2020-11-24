@@ -7,6 +7,49 @@ require('isomorphic-fetch');
 const axios = require('axios')
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
+const isValidChatRoomCreation = (fromUserId, toUserId, roomId, chatRoom) => {
+    const participantIds = roomId.split("-")
+
+    if (!participantIds || participantIds.length !== 2) {
+        return false;
+    }
+
+    if (roomId !== chatRoom.roomId || chatRoom.isGroupChat) {
+        return false;
+    }
+
+    let isToUserValid = toUserId == participantIds[0] || toUserId == participantIds[1]
+    let isFromUserValid = fromUserId == participantIds[0] || fromUserId == participantIds[1]
+
+    if (!isToUserValid || !isFromUserValid) {
+        return false;
+    }
+
+    const participants = chatRoom.participants;
+
+    if (participants.length !== 2) {
+        return false
+    }
+
+    isToUserValid = toUserId == participants[0].id || toUserId == participants[1].id
+    isFromUserValid = fromUserId == participants[0].id || fromUserId == participants[1].id
+
+    if (!isToUserValid || !isFromUserValid) {
+        return false;
+    }
+
+    return true
+}
+
+const isValidJoinChatRoomRequest = (currentUserUid, roomId) => {
+    const participantIds = roomId.split("-")
+    if (!participantIds || participantIds.length !== 2) {
+        return false;
+    }
+
+    return currentUserUid == participantIds[0] || currentUserUid == participantIds[1]
+}
+
 io.use(async (socket, next) => {
     if (!socket.handshake.query.token) {
         next(new Error("Failed to authenticate."));
@@ -50,12 +93,45 @@ io.use(async (socket, next) => {
     console.log("uid: ", socket.uid)
     console.log("currentMember: ", socket.currentMember)
     io.to(socket.id).emit("LOAD_CURRENT_MEMBER", socket.currentMember)
-   // console.log("currentMember: ", "herhere")
+    // console.log("currentMember: ", "herhere")
+    ///temp join room:
+    socket.join(socket.uid)
+
     socket.join("1")
-    socket.join("2") 
+    socket.join("2")
     io.to(socket.id).emit("LOAD_CHAT_LIST", [{ roomId: "1", chatMessages: [], participants: [{ name: "Bill Pooper", imageUrl: "https://i.pinimg.com/564x/04/bb/21/04bb2164bbfa3684118a442c17d086bf.jpg" }] }, { roomId: "2", chatMessages: [], participants: [{ name: "Jilly Silly", imageUrl: "https://avatarfiles.alphacoders.com/165/165325.jpg" }] }]);
-    
-   // console.log("currentMember: ", "herhere")
+
+    socket.on("CHAT_MESSAGE_SEND", (message) => {
+        console.log(message)
+        console.log(socket.uid)
+        io.in(message.roomId).emit("CHAT_MESSAGE_RECEIVED", message)
+    })
+
+    socket.on("CREATE_NEW_CHAT_ROOM", (toUserId, roomId, chatRoom) => {
+        console.log(toUserId)
+        console.log(roomId)
+        console.log(chatRoom)
+        if (!isValidChatRoomCreation(socket.uid, toUserId, roomId, chatRoom)) {
+            io.to(socket.id).emit("ON_NEW_CHAT_ROOM_CREATED_FAILED", "Invalid chat room creation.")
+            return
+        }
+        socket.join(roomId)
+        io.to(socket.id).emit("ON_NEW_CHAT_ROOM_CREATED", chatRoom)
+        io.in(toUserId).emit("SEND_REQUEST_TO_JOIN_CHAT_ROOM", chatRoom)
+    })
+
+    socket.on("REQUEST_TO_JOIN_CHAT_ROOM", (roomId) => {
+        console.log(roomId)
+        if (!isValidJoinChatRoomRequest(socket.uid, roomId)) {
+            console.log("BRAAAHH get out of here trying to join a room you can't.......")
+            // Send polite error response back:
+            io.to(socket.id).emit("REQUEST_TO_JOIN_CHAT_ROOM_FAILED", roomId, "You don't have permission to join this room.")
+            return
+        }
+        socket.join(roomId)
+    })
+
+    // console.log("currentMember: ", "herhere")
     // const authParams = {
 
     // fetch("https://over.localhost.achievers.com/api/v5/current-member", {
@@ -110,24 +186,24 @@ io.use(async (socket, next) => {
     //         //res.send(error);
     //     });
 
-    fetch("https://over.localhost.achievers.com/api/v5/announcements", {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${socket.token}`,
-        },
-    })
-        .then(function (response) {
-            console.log("response:", response.data)
-            return response.json();
-        })
-        .then(function (response) {
-            console.log('server response', response);
-            // res.send(response);
-        })
-        .catch(function (error) {
-            console.error(error)
-            //res.send(error);
-        });
+    // fetch('https://over.localhost.achievers.com/api/v5/upcoming-celebrations?startDate="20020-12-30T01:02:03-05:00"&endDate="2021-12-30T01:02:03-05:00"', {
+    //     method: 'GET',
+    //     headers: {
+    //         Authorization: `Bearer ${socket.token}`,
+    //     },
+    // })
+    //     .then(function (response) {
+    //         console.log("response:", response.data)
+    //         return response.json();
+    //     })
+    //     .then(function (response) {
+    //         console.log('server response', response);
+    //         // res.send(response);
+    //     })
+    //     .catch(function (error) {
+    //         console.error(error)
+    //         //res.send(error);
+    //     });
     //  grpcResolver( 
     //     {
     //         grpcClient: userClient,
@@ -147,10 +223,7 @@ io.use(async (socket, next) => {
     //     }
     // )
 
-    socket.on("CHAT_MESSAGE_SEND", (message) => {
-        console.log(message)
-        io.in(message.roomId).emit("CHAT_MESSAGE_RECEIVED", message)
-    })
+
 
 });
 

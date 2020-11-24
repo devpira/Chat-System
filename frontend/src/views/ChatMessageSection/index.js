@@ -51,7 +51,7 @@ const ChatMessageSection = () => {
     const classes = useStyles();
     const messagesEndRef = useRef(null)
 
-    const { currentChatRoom, chatRooms } = useContext(ChatContext);
+    const { currentChatRoom, chatRooms, sendChatMessage } = useContext(ChatContext);
     const { socket } = useContext(SocketContext);
     const { currentMember } = useContext(CurrentMemberContext);
 
@@ -60,30 +60,24 @@ const ChatMessageSection = () => {
     }, [currentChatRoom]);
 
 
-    const onMessageSend = (message) => {
-        if (message) {
-            const builtMessage = { uid: currentMember.id, name: currentMember.preferredFirstName + " " + currentMember.lastName, message, roomId: currentChatRoom.roomId, time: "8:00 am" };
-            socket.emit("CHAT_MESSAGE_SEND", builtMessage)
-        }
-    }
     console.log("currentChatRoom", currentChatRoom)
     console.log("chatRooms", chatRooms)
     console.log("currentMember", currentMember)
     return (
         <div className={classes.root}>
             {currentChatRoom && chatRooms.length > 0 ? <>
-                <Topbar title={currentChatRoom.participants[0].name} />
+                <Topbar participant={currentChatRoom.participants[0]} />
                 <Paper className={classes.body} square >
                     <div ref={messagesEndRef}>
                         {
                             currentChatRoom.chatMessages.map((item, index) => {
                                 return item.uid === currentMember.id ? <ToChatBubble key={index} message={item} imageUrl={currentMember.profileImageUrl} displayName={currentMember.preferredFirstName + " " + currentMember.lastName} />
-                                    : <FromChatBubble key={index} jid={item.name} message={item.message} />
+                                    : <FromChatBubble key={index} jid={item.name} message={item.message} imageUrl={""}/>
                             })
                         }
                     </div>
                 </Paper>
-                <BottomBar onMessageSend={onMessageSend} />
+                <BottomBar onMessageSend={sendChatMessage} />
             </> : <div ref={messagesEndRef}></div>}
 
         </div>

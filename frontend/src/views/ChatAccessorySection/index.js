@@ -4,6 +4,7 @@ import { Paper, Typography } from '@material-ui/core'
 import { AntTabs, AntTab } from '../../shared/Components'
 import RecoSection from './RecoSection'
 import AnnoucementSection from './AnnoucementSection'
+import CelebrationSection from './CelebrationSection'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,6 +51,7 @@ const ChatRecoSection = () => {
             <div className={classes.content}>
                 <RecoSection value={value} index={0} />
                 <AnnoucementSection value={value} index={1} />
+                <CelebrationSection value={value} index={2} />
             </div>
         </Paper>
     );

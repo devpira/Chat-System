@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const FromChatBubble = ({ jid, message }) => {
+const FromChatBubble = ({ jid, message, imageUrl }) => {
     const classes = useStyles();
 
     return (

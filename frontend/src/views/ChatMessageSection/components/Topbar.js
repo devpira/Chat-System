@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx'
+import Avatar from '@material-ui/core/Avatar';
+import ImageIcon from '@material-ui/icons/Image';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -17,18 +19,26 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         //borderBottom: "1px solid grey"
     },
-
+    topAlignSection: {
+        marginLeft: theme.spacing(2),
+        display: "flex",
+        alignItems: "center"
+    },
     title: {
         marginLeft: theme.spacing(2),
         // color: theme.palette.primary.main
+    },
+    avatar: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
     },
     icon: {
         fontSize: "28px"
     }
 }));
 
-const Topbar = ({className, title}) => {
-   
+const Topbar = ({ className, participant }) => {
+
     const classes = useStyles();
 
     return (
@@ -38,8 +48,11 @@ const Topbar = ({className, title}) => {
             className={clsx(classes.root, className)}
         >
             <div className={classes.topAlignSection}>
+                <Avatar src={participant.imageUrl} className={classes.avatar}>
+                    <ImageIcon />
+                </Avatar>
                 <Typography variant="h5" className={classes.title}>
-                    <strong>{title}</strong>
+                    <strong>{participant.name}</strong>
                 </Typography>
             </div>
             <div>
