@@ -141,17 +141,6 @@ export const ChatProvider = ({ children }) => {
         }
     }
 
-    // const moveChatToFirst = (chat, chatRooms) => {
-    //     const newChatRooms = chatRooms
-    //     newChatRooms.forEach((item, index) => {
-    //         if (item.roomId === chat.roomId) {
-    //             newChatRooms.splice(index, 1);
-    //             newChatRooms.unshift(item);
-    //         }
-    //     })
-    //     setChatRooms(newChatRooms)
-    // }
-
     const createPreChat = (member) => {
         console.log("CREATE CHAT", member)
         const memberId = member.id;
@@ -194,7 +183,12 @@ export const ChatProvider = ({ children }) => {
     const sendNewChatRoomRequest = (initalMessage) => {
         console.log("initalMessage0", initalMessage);
         const toUser = currentChatRoom.participants.filter((item) => item.id !== currentMember.id)[0];
-        const roomId = toUser.id + "-" + currentMember.id;
+        let roomId;
+        if (toUser.id > currentMember.id) {
+            roomId = toUser.id + "-" + currentMember.id;
+        } else {
+            roomId = currentMember.id + "-" + toUser.id;
+        }
         const chatMessage = generateNewChatMessage(initalMessage);
         const chatRoom = { ...currentChatRoom, roomId, chatMessages: [chatMessage] }
         socket.emit("CREATE_NEW_CHAT_ROOM", toUser.id, roomId, chatRoom)
@@ -223,7 +217,8 @@ export const ChatProvider = ({ children }) => {
                     setCurrentChatRoom,
                     chatRooms,
                     createPreChat,
-                    sendChatMessage
+                    sendChatMessage,
+                    currentMemberId: currentMember.id
                 }
             }
         >

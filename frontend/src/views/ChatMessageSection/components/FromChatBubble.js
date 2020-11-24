@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import PersonIcon from '@material-ui/icons/Person';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         color: "white",
         wordWrap: "breakWord",
         // 
-       
+
         marginLeft: "30px",
         marginRight: "18px",
         '&:before': {
@@ -64,23 +65,20 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const FromChatBubble = ({ jid, message, imageUrl }) => {
+const FromChatBubble = ({ message, imageUrl }) => {
     const classes = useStyles();
 
     return (
-        <Grid container 
-        className={classes.root}
+        <Grid container
+            className={classes.root}
             direction="column"
             justify="center"
             alignItems="flex-start"
             spacing={3}>
             <Grid item xs={12}>
-                {/* <Typography variant="body1" className={classes.name}>
-                    Pirashanth
-                </Typography> */}
                 <div className={classes.bubbleContainer} key={1}>
-                    <Avatar alt="Remy Sharp" src="/broken-image.jpg" className={classes.largeAvater} >
-                        {jid.charAt(0).toUpperCase()}
+                    <Avatar alt="Remy Sharp" src={imageUrl} className={classes.largeAvater} >
+                        <PersonIcon />
                     </Avatar>
                     <div className={classes.bubble}>
                         <Typography variant="h5" className={classes.text}>

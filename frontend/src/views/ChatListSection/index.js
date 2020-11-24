@@ -1,10 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Paper, Typography } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
 import ContactSearchBar from './components/ContactSearchBar';
 import ChatList from './components/ChatList';
 
+import { Collapse } from 'antd';
+const { Panel } = Collapse;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +28,21 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(2),
         marginBottom: theme.spacing(2),
     },
-
+    collapse: {
+        overflowY: "auto",
+        height: '100%',
+        display: "flex",
+        flexDirection: "column",
+        padding: 0
+    },
+    panel: {
+        padding: 0
+    },
+    // container: {
+    //     flex: 1,
+    //    // height: '20%',
+    //     overflowY: "auto"
+    // }
 }));
 
 const ChatListSection = () => {
@@ -36,7 +52,16 @@ const ChatListSection = () => {
         <Paper className={classes.root} >
             <img src="https://www.achievers.com/wp-content/uploads/2020/10/Achievers_Logo_CMYK.png" className={classes.logo}></img>
             <ContactSearchBar />
-            <ChatList />
+
+            <Collapse defaultActiveKey={['1', '2']} ghost className={classes.collapse}>
+                <Panel header="Team Chat Rooms" key="1" className={classes.panel}>
+                        <ChatList />
+                </Panel>
+                <Panel header="Personal Chats" key="2">
+                        <ChatList />
+                </Panel>
+            </Collapse>
+
         </Paper>
     );
 }

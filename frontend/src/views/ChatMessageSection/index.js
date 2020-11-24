@@ -6,7 +6,6 @@ import BottomBar from './components/BottomBar';
 import FromChatBubble from './components/FromChatBubble';
 import ToChatBubble from './components/ToChatBubble';
 
-import { SocketContext } from '../../shared/SocketIo';
 import { ChatContext } from '../../providers/ChatProvider'
 import { CurrentMemberContext } from '../../shared/CurrentMember'
 
@@ -52,27 +51,36 @@ const ChatMessageSection = () => {
     const messagesEndRef = useRef(null)
 
     const { currentChatRoom, chatRooms, sendChatMessage } = useContext(ChatContext);
-    const { socket } = useContext(SocketContext);
     const { currentMember } = useContext(CurrentMemberContext);
+    const [otherParticipant, setOtherParticipant] = useState();
 
     useEffect(() => {
         messagesEndRef.current.scrollIntoView({ block: 'end', })
     }, [currentChatRoom]);
 
+    useEffect(() => {
+        const result = currentChatRoom.participants.filter((item) => item.id !== currentMember.id);
+        if (result.length === 1) {
+            setOtherParticipant(result[0])
+        }
+    }, [currentChatRoom])
+
 
     console.log("currentChatRoom", currentChatRoom)
     console.log("chatRooms", chatRooms)
     console.log("currentMember", currentMember)
+
+
     return (
         <div className={classes.root}>
-            {currentChatRoom && chatRooms.length > 0 ? <>
-                <Topbar participant={currentChatRoom.participants[0]} />
+            {currentChatRoom && chatRooms.length > 0 && otherParticipant ? <>
+                <Topbar participant={otherParticipant} />
                 <Paper className={classes.body} square >
                     <div ref={messagesEndRef}>
                         {
                             currentChatRoom.chatMessages.map((item, index) => {
                                 return item.uid === currentMember.id ? <ToChatBubble key={index} message={item} imageUrl={currentMember.profileImageUrl} displayName={currentMember.preferredFirstName + " " + currentMember.lastName} />
-                                    : <FromChatBubble key={index} jid={item.name} message={item.message} imageUrl={""}/>
+                                    : <FromChatBubble key={index} message={item.message} imageUrl={otherParticipant.imageUrl} />
                             })
                         }
                     </div>

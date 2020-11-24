@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         marginLeft: theme.spacing(2),
         marginRight: theme.spacing(2),
+        marginBottom: theme.spacing(1.5),
         borderRadius: "35px",
         backgroundColor: "#F3F6FB",
     },
@@ -87,7 +88,7 @@ const ContactSearchBar = () => {
     const classes = useStyles();
 
     const { oAuthToken } = useContext(AuthContext);
-    const { createPreChat } = useContext(ChatContext);
+    const { createPreChat, currentMemberId } = useContext(ChatContext);
 
     const [error, setError] = useState();
     const [memberList, setMemberlist] = useState([]);
@@ -115,6 +116,7 @@ const ContactSearchBar = () => {
                 {
                     params: {
                         q: inputValue,
+                        excludedUserIds: currentMemberId
                     },
                     headers: {
                         'Authorization': `Bearer ${oAuthToken}`,
