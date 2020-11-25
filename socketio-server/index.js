@@ -50,6 +50,40 @@ const isValidJoinChatRoomRequest = (currentUserUid, roomId) => {
     return currentUserUid == participantIds[0] || currentUserUid == participantIds[1]
 }
 
+const generateTeamChatRoom = (roomId, name, imageUrl) => {
+    return {
+        roomId,
+        type: 'team-chat',
+        name,
+        imageUrl,
+        chatMessages: [],
+        participants: [],
+    }
+}
+
+const generateGeneralChatRoom = (socket) => {
+    const roomId = 'general';
+    socket.join(roomId)
+    return generateTeamChatRoom(roomId, "General", "https://www.achievers.com/wp-content/uploads/2020/09/achievers-mark-2019.png")
+}
+
+const generateDepartmentChatRoom = (socket, currentMember) => {
+    let department;
+    if (currentMember.displayValues) {
+        department = currentMember.displayValues.filter((item) => item.id === 1)
+        if (department.length != 1) {
+            return [];
+        }
+        department = department[0]
+        if(!department.value) {
+            return[];
+        }
+        department = department.value
+    }
+    socket.join(department)
+    return [generateTeamChatRoom(department, department, "https://www.pngkit.com/png/full/189-1891753_team-icon-png-team-icon-orange.png")]
+}
+
 io.use(async (socket, next) => {
     if (!socket.handshake.query.token) {
         next(new Error("Failed to authenticate."));
@@ -99,7 +133,10 @@ io.use(async (socket, next) => {
 
     socket.join("1")
     socket.join("2")
-    io.to(socket.id).emit("LOAD_CHAT_LIST", [{ roomId: "1", chatMessages: [], participants: [{ name: "Bill Pooper", imageUrl: "https://i.pinimg.com/564x/04/bb/21/04bb2164bbfa3684118a442c17d086bf.jpg" }] }, { roomId: "2", chatMessages: [], participants: [{ name: "Jilly Silly", imageUrl: "https://avatarfiles.alphacoders.com/165/165325.jpg" }] }]);
+
+    io.to(socket.id).emit("LOAD_CHAT_LIST",
+        [generateGeneralChatRoom(socket), ...generateDepartmentChatRoom(socket, socket.currentMember)]
+    );
 
     socket.on("CHAT_MESSAGE_SEND", (message) => {
         console.log(message)

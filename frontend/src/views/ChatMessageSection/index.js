@@ -59,10 +59,19 @@ const ChatMessageSection = () => {
     }, [currentChatRoom]);
 
     useEffect(() => {
-        const result = currentChatRoom.participants.filter((item) => item.id !== currentMember.id);
-        if (result.length === 1) {
-            setOtherParticipant(result[0])
+        if (!currentChatRoom) {
+            return;
         }
+
+        if (currentChatRoom.type === "team-chat") {
+            setOtherParticipant({ imageUrl: currentChatRoom.imageUrl, name: currentChatRoom.name });
+        } else {
+            const result = currentChatRoom.participants.filter((item) => item.id !== currentMember.id);
+            if (result.length === 1) {
+                setOtherParticipant(result[0])
+            }
+        }
+
     }, [currentChatRoom])
 
 
@@ -80,7 +89,7 @@ const ChatMessageSection = () => {
                         {
                             currentChatRoom.chatMessages.map((item, index) => {
                                 return item.uid === currentMember.id ? <ToChatBubble key={index} message={item} imageUrl={currentMember.profileImageUrl} displayName={currentMember.preferredFirstName + " " + currentMember.lastName} />
-                                    : <FromChatBubble key={index} message={item.message} imageUrl={otherParticipant.imageUrl} />
+                                    : <FromChatBubble key={index} message={item.message} imageUrl={item.imageUrl} />
                             })
                         }
                     </div>

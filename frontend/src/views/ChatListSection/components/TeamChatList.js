@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
         width: '110%',
         flex: 1,
         backgroundColor: theme.palette.background.paper,
+        // marginTop: theme.spacing(1),
         overflowY: "auto",
         padding: 0,
         marginLeft: theme.spacing(-2),
@@ -27,36 +28,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ChatList = () => {
+const TeamChatList = () => {
     const classes = useStyles();
 
-    const { setCurrentChatRoom, chatRooms, currentMemberId } = useContext(ChatContext);
+    const { setCurrentChatRoom, chatRooms } = useContext(ChatContext);
 
     return (
         <List className={classes.root}>
             {chatRooms.map((item, index) => {
-                if (item.type !== "chat") return null;
+                if (item.type !== "team-chat") return null;
                 return <ListItem button key={index} onClick={() => { setCurrentChatRoom(chatRooms[index]) }}>
-
-                    {item.participants.map((participant, index) => {
-                        if (participant.id !== currentMemberId) {
-                            return <Avatar key={index} src={participant.imageUrl} className={classes.avatar}>
-                                <PersonIcon />
-                            </Avatar>
-                        }
-                    })}
-
-                    {item.participants.map((participant, index) => {
-                        if (participant.id !== currentMemberId) {
-                            return <ListItemText key={index} primary={<strong>{participant.name}</strong>} secondary={item.chatMessages.length > 0 ? item.chatMessages[item.chatMessages.length - 1].message : ""} />
-
-                        }
-                    })}
+                    <Avatar src={item.imageUrl} className={classes.avatar}>
+                        <PersonIcon />
+                    </Avatar>
+                    <ListItemText primary={<strong>{item.name}</strong>}  />
                 </ListItem>
             })}
-          
+
         </List>
     );
 }
 
-export default ChatList;
+export default TeamChatList;

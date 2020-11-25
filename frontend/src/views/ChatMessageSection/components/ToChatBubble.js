@@ -3,16 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
     root: {
         marginTop: "18px",
     },
     bubbleContainer: {
-        //marginTop: "18px",
         marginBottom: "8px",
         display: "flex",
-
         fontSize: "14px",
         alignItems: "center",
         flexDirection: "rowReverse",
@@ -28,32 +27,23 @@ const useStyles = makeStyles(theme => ({
         verticalAlign: "top",
         color: "white",
         wordWrap: "breakWord",
-        // 
-
         marginLeft: "18px",
         marginRight: "30px",
         '&:before': {
             backgroundColor: theme.palette.primary.main,
             content: "'\\00a0'",
-
             display: "block",
             height: "16px",
             position: "absolute",
             top: "18px",
             transform: "rotate( 29deg ) skew( -35deg )",
-            // -moz-transform:    rotate( 29deg ) skew( -35deg );
-            // -ms-transform:     rotate( 29deg ) skew( -35deg );
-            // -o-transform:      rotate( 29deg ) skew( -35deg );
-            // -webkit-transform: rotate( 29deg ) skew( -35deg );
             width: "20px",
-
             boxShadow: "2px -2px 2px 0 rgba( 178, 178, 178, .4 )",
             right: "-9px",
         },
     },
     text: {
         color: "white",
-
     },
     name: {
 
@@ -86,8 +76,8 @@ const ToChatBubble = ({ displayName, imageUrl,  message }) => {
                     </div>
                     <Avatar alt="Remy Sharp" src={imageUrl} className={classes.largeAvater} >   {message.name.charAt(0).toUpperCase()}</Avatar>
                 </div>
-                <Typography variant="body1" className={classes.name}>
-                    {message.time}
+                <Typography variant="body2" className={classes.name}>
+                    {Moment(message.time).format('h:mm a - MM/DD')}
                 </Typography>
             </Grid>
         </Grid>

@@ -4,6 +4,7 @@ import { Paper } from '@material-ui/core'
 
 import ContactSearchBar from './components/ContactSearchBar';
 import ChatList from './components/ChatList';
+import TeamChatList from './components/TeamChatList';
 
 import { Collapse } from 'antd';
 const { Panel } = Collapse;
@@ -55,7 +56,7 @@ const ChatListSection = () => {
 
             <Collapse defaultActiveKey={['1', '2']} ghost className={classes.collapse}>
                 <Panel header="Team Chat Rooms" key="1" className={classes.panel}>
-                        <ChatList />
+                        <TeamChatList />
                 </Panel>
                 <Panel header="Personal Chats" key="2">
                         <ChatList />

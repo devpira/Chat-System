@@ -3,6 +3,7 @@ import { SocketContext } from '../../shared/SocketIo'
 import { CurrentMemberContext } from '../../shared/CurrentMember'
 import { LOAD_CHAT_LIST, CHAT_MESSAGE_RECEIVED } from '../../shared/SocketIo/Events'
 import LoadingScreen from '../../shared/LoadingScreen'
+import Moment from 'moment';
 
 export const ChatContext = React.createContext();
 
@@ -49,12 +50,15 @@ export const ChatProvider = ({ children }) => {
                 const newChatRoom = { ...chatRoom[0], chatMessages: [...chatRoom[0].chatMessages, receviedMessage] };
                 newChatRooms[index] = newChatRoom;
 
-                newChatRooms.forEach((item, index) => {
-                    if (item.roomId === newChatRoom.roomId) {
-                        newChatRooms.splice(index, 1);
-                        newChatRooms.unshift(item);
-                    }
-                })
+                if (newChatRoom.type !== "team-chat") {
+                    newChatRooms.forEach((item, index) => {
+                        if (item.roomId === newChatRoom.roomId) {
+                            newChatRooms.splice(index, 1);
+                            newChatRooms.unshift(item);
+                        }
+                    })
+                }
+
                 setChatRooms(newChatRooms)
 
                 console.log("LAAAAAAAAAA")
@@ -90,7 +94,7 @@ export const ChatProvider = ({ children }) => {
                     // TO-DO - This part of is similar to CHAT_MESSAGE_RECEIVED. Should create common function.
                     const index = currentChatRooms.current.findIndex((item) => item.roomId === chatRoom.roomId)
                     let newChatRooms = [...currentChatRooms.current];
-                    const newChatRoom = { ...existChatRoom[0], chatMessages: [...existChatRoom[0].chatMessages, ...chatRoom.chatMessages]};
+                    const newChatRoom = { ...existChatRoom[0], chatMessages: [...existChatRoom[0].chatMessages, ...chatRoom.chatMessages] };
                     newChatRooms[index] = newChatRoom;
 
                     newChatRooms.forEach((item, index) => {
@@ -105,7 +109,7 @@ export const ChatProvider = ({ children }) => {
                     console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_noooooooooo");
                     setChatRooms([chatRoom, ...currentChatRooms.current])
                 }
-        
+
                 socket.emit("REQUEST_TO_JOIN_CHAT_ROOM", chatRoom.roomId);
             })
         }
@@ -125,6 +129,7 @@ export const ChatProvider = ({ children }) => {
         return {
             //roomId: chatToMember.id + "-" + currentMember.id,
             isGroupChat: false,
+            type: "chat",
             chatMessages: [],
             participants: [
                 {
@@ -175,7 +180,8 @@ export const ChatProvider = ({ children }) => {
                 currentMember.id,
             name: currentMember.fullName,
             roomId: currentChatRoom.roomId,
-            time: "8:00 am",
+            imageUrl: currentMember.profileImageUrl,
+            time: Moment().format(),
             message,
         }
     }
