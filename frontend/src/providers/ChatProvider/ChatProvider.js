@@ -5,7 +5,12 @@ import { LOAD_CHAT_LIST, CHAT_MESSAGE_RECEIVED } from '../../shared/SocketIo/Eve
 import LoadingScreen from '../../shared/LoadingScreen'
 import Moment from 'moment';
 
+import { notification } from 'antd';
+import Avatar from '@material-ui/core/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
+
 export const ChatContext = React.createContext();
+
 
 export const ChatProvider = ({ children }) => {
     const { socket } = useContext(SocketContext);
@@ -21,6 +26,22 @@ export const ChatProvider = ({ children }) => {
 
     const [pending, setPending] = useState(true);
 
+    const openNotification = (name, imageUrl, message) => {
+        notification.open({
+            message: <div style={{ display: "flex", marginRight: "10px" }}>
+                <Avatar style={{ width: "30px", height: "30px", marginRight: "10px" }} src={imageUrl} >
+                    <PersonIcon />
+                </Avatar>
+                <strong><p style={{ fontSize: "13px", textAlign: "center" }}>{name}</p></strong>
+            </div>,
+            description:
+                <div style={{ marginLeft: "10px", marginRight: "10px" }}>{message}</div>,
+
+            onClick: () => {
+                console.log('Notification Clicked!');
+            },
+        });
+    };
 
     useEffect(() => {
 
@@ -61,11 +82,14 @@ export const ChatProvider = ({ children }) => {
 
                 setChatRooms(newChatRooms)
 
-                console.log("LAAAAAAAAAA")
+
                 if (currentChatRoomRef.current.roomId === newChatRoom.roomId) {
                     setCurrentChatRoom(newChatRoom)
+                } else {
+                    if(newChatRoom.type  === "chat")
+                    openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message);
                 }
-                console.log("BBAAAAAAAHHHHHH")
+
             })
         }
 
@@ -108,6 +132,7 @@ export const ChatProvider = ({ children }) => {
                 } else {
                     console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_noooooooooo");
                     setChatRooms([chatRoom, ...currentChatRooms.current])
+                    openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message);
                 }
 
                 socket.emit("REQUEST_TO_JOIN_CHAT_ROOM", chatRoom.roomId);
@@ -135,12 +160,12 @@ export const ChatProvider = ({ children }) => {
                 {
                     id: chatToMember.id,
                     name: chatToMember.fullName,
-                    imageUrl: chatToMember.profileImageUrl
+                    imageUrl: chatToMember.largeImageUrl
                 },
                 {
                     id: currentMember.id,
                     name: currentMember.fullName,
-                    imageUrl: currentMember.profileImageUrl
+                    imageUrl: currentMember.largeImageUrl
                 }
             ]
         }
@@ -180,7 +205,7 @@ export const ChatProvider = ({ children }) => {
                 currentMember.id,
             name: currentMember.fullName,
             roomId: currentChatRoom.roomId,
-            imageUrl: currentMember.profileImageUrl,
+            imageUrl: currentMember.largeImageUrl,
             time: Moment().format(),
             message,
         }

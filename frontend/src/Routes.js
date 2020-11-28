@@ -1,15 +1,15 @@
 import React from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 
 import  AuthRequiredRoute  from './shared/Routes';
 
-import Home from './views/Home'
+import ChatApp from './views'
 
 const Routes = () => {
   return (
     <Switch>
       <AuthRequiredRoute
-        component={Home}
+        component={ChatApp}
         exact
         path="/"
       />

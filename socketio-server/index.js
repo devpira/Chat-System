@@ -4,7 +4,6 @@ const io = require('socket.io')(server);
 const PORT = process.env.PORT || 5000;
 require('isomorphic-fetch');
 
-const axios = require('axios')
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 const isValidChatRoomCreation = (fromUserId, toUserId, roomId, chatRoom) => {
@@ -75,8 +74,8 @@ const generateDepartmentChatRoom = (socket, currentMember) => {
             return [];
         }
         department = department[0]
-        if(!department.value) {
-            return[];
+        if (!department.value) {
+            return [];
         }
         department = department.value
     }
@@ -168,8 +167,44 @@ io.use(async (socket, next) => {
         socket.join(roomId)
     })
 
-    // console.log("currentMember: ", "herhere")
-    // const authParams = {
+    socket.on("VIDEO_CALL_USER_REQUEST", (userId, myInfo) => {
+        console.log("VIDEO_CALL_USER_REQUEST")
+        console.log(userId)
+        console.log(myInfo)
+
+        io.to(userId).emit("VIDEO_CALL_USER_ANSWER_REQUEST", myInfo)
+    })
+
+    socket.on("VIDEO_CALL_USER_DECLINE", (userId, myId) => {
+        console.log("VIDEO_CALL_USER_DECLINE")
+        console.log(userId)
+
+        io.to(userId).emit("VIDEO_CALL_USER_DECLINE_NOTIFY", myId)
+    })
+
+    socket.on("VIDEO_CALL_USER_ANSWER", (userId, myId) => {
+        console.log("VIDEO_CALL_USER_ANSWER")
+        console.log(userId)
+
+        io.to(userId).emit("VIDEO_CALL_USER_ANSWER_NOTIFY", myId)
+    })
+
+    socket.on("VIDEO_CALL_START_STREAM_REQUEST", (userId, id) => {
+        console.log("VIDEO_CALL_START_STREAM_REQUEST")
+        console.log(userId)
+        console.log(id)
+
+        io.to(userId).emit("VIDEO_CALL_START_STREAM_START", id)
+    })
+
+    socket.on("VIDEO_CALL_END_STREAM_REQUEST", (userId, myId) => {
+        console.log("VIDEO_CALL_END_STREAM_REQUEST")
+        console.log(userId)
+        console.log(myId)
+
+        io.to(userId).emit("VIDEO_CALL_END_STREAM", myId)
+    })
+
 
     // fetch("https://over.localhost.achievers.com/api/v5/current-member", {
     //     method: 'GET',
@@ -190,77 +225,6 @@ io.use(async (socket, next) => {
     //         console.error(error)
     //         //res.send(error);
     //     });
-
-
-    // })
-    // .catch(function (error) { 
-    //     console.log(error);
-    // });
-
-    //window.location.replace(loginUrl);
-    // fetch("http://over.localhost.achievers.com/oauth/v2/openIDConnectClient/token", {
-    //     method: 'POST',
-    //     headers: {
-    //         // 'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //         // 'Access-Control-Allow-Origin': '*',
-    //         // 'Content-Type': 'application/json',
-    //     },
-
-    //     body: JSON.stringify(authParams)
-    // })
-    //     .then(function (response) {
-    //        // console.log("response:", response)
-    //         //return response.json();
-    //         return response.json();
-    //     })
-    //     .then(function (response) {
-    //         console.log('server response', response);
-
-    //     })
-    //     .catch(function (error) {
-    //         console.error(error)
-    //         //res.send(error);
-    //     });
-
-    // fetch('https://over.localhost.achievers.com/api/v5/upcoming-celebrations?startDate="20020-12-30T01:02:03-05:00"&endDate="2021-12-30T01:02:03-05:00"', {
-    //     method: 'GET',
-    //     headers: {
-    //         Authorization: `Bearer ${socket.token}`,
-    //     },
-    // })
-    //     .then(function (response) {
-    //         console.log("response:", response.data)
-    //         return response.json();
-    //     })
-    //     .then(function (response) {
-    //         console.log('server response', response);
-    //         // res.send(response);
-    //     })
-    //     .catch(function (error) {
-    //         console.error(error)
-    //         //res.send(error);
-    //     });
-    //  grpcResolver( 
-    //     {
-    //         grpcClient: userClient,
-    //         grpcFunction: 'GetUser',
-    //         authentication: { uid: socket.uid },
-    //         requestParams: { uid: socket.uid },
-    //         onSuccess: (result) => {
-    //             console.log("CURRENT USER: ", result)
-    //             io.to(socket.id).emit("LOAD_CURRENT_MEMBER", result)
-    //             socket.join("1")
-    //             socket.join("2")
-    //             console.log("CAME HERE")
-    //             io.to(socket.id).emit("LOAD_CHAT_LIST", [{ roomId: "1", chatMessages: [], participants: [{ name: "Bill Pooper", imageUrl: "https://i.pinimg.com/564x/04/bb/21/04bb2164bbfa3684118a442c17d086bf.jpg" }] }, { roomId: "2", chatMessages: [], participants: [{ name: "Jilly Silly", imageUrl: "https://avatarfiles.alphacoders.com/165/165325.jpg" }] }]);
-
-    //             return result
-    //         }
-    //     }
-    // )
-
-
 
 });
 

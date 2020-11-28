@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Paper, IconButton } from '@material-ui/core'
@@ -8,6 +8,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx'
 import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
+
+import { VideoChatContext } from '../../../providers/VideoChatProvider';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -29,6 +31,7 @@ const useStyles = makeStyles(theme => ({
         // color: theme.palette.primary.main
     },
     avatar: {
+        marginLeft: theme.spacing(1),
         width: theme.spacing(5),
         height: theme.spacing(5),
     },
@@ -38,8 +41,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = ({ className, participant }) => {
-
     const classes = useStyles();
+    const { startCallingUser } = useContext(VideoChatContext)
+
+    const videoCallUser = () => {
+        console.log("CALL")
+        startCallingUser(participant.id, participant.name, participant.imageUrl)
+    }
 
     return (
         <Paper
@@ -56,10 +64,12 @@ const Topbar = ({ className, participant }) => {
                 </Typography>
             </div>
             <div>
-                <IconButton aria-label="livechat" color="primary">
+                {participant.id && <IconButton aria-label="livechat" color="primary" onClick={videoCallUser}>
                     <VideocamIcon className={classes.icon} />
                 </IconButton>
-                <IconButton aria-label="livechat" color="primary">
+                }
+
+                <IconButton aria-label="options" color="primary">
                     <MoreVertIcon className={classes.icon} />
                 </IconButton>
 

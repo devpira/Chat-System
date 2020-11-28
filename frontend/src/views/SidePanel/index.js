@@ -54,9 +54,9 @@ const SidePanel = () => {
                 </IconButton>
             </div>
             <div>
-                <IconButton aria-label="logout"  >
+                {/* <IconButton aria-label="logout"  >
                     <ExitToAppIcon className={classes.icon} style={{ color: '#ffffff' }} />
-                </IconButton>
+                </IconButton> */}
             </div>
         </Paper>
 
