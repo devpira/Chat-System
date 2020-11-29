@@ -16,13 +16,13 @@ io.use(async (socket, next) => {
     if (!socket.handshake.query.token) {
         next(new Error("Failed to authenticate."));
     }
-    socket.uid = 123455
+
     socket.token = socket.handshake.query.token
     console.log("token", socket.handshake.query.token)
 
     if (!socket.token) {
         //TO-DO - implement error here:
-        new Error("Failed to authenticate2.")
+        new Error("Failed to authenticate.")
     }
 
     fetch(`https://over.localhost.achievers.com/api/v5/current-member`, {
@@ -30,20 +30,17 @@ io.use(async (socket, next) => {
         headers: {
             Authorization: `Bearer ${socket.token}`,
         },
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (response) {
-            console.log('server response', response);
-            socket.uid = response.id
-            socket.currentMember = response
-            next();
-        })
-        .catch(function (error) {
-            console.error(error)
-            next(new Error("Failed to authenticate."));
-        });
+    }).then(function (response) {
+        return response.json();
+    }).then(function (response) {
+        console.log('server response', response);
+        socket.uid = response.id
+        socket.currentMember = response
+        next();
+    }).catch(function (error) {
+        console.error(error)
+        next(new Error("Failed to authenticate."));
+    });
 }).on('connection', socket => {
     console.log("User connected, Socket ID: ", socket.id)
 
@@ -55,7 +52,6 @@ io.use(async (socket, next) => {
     console.log("currentMember: ", socket.currentMember)
     io.to(socket.id).emit("LOAD_CURRENT_MEMBER", socket.currentMember)
 
-    ///temp join room:
     socket.join(socket.uid)
 
     io.to(socket.id).emit("LOAD_CHAT_LIST",
@@ -129,7 +125,6 @@ io.use(async (socket, next) => {
 
         io.to(userId).emit("VIDEO_CALL_END_STREAM", myId)
     })
-
 });
 
 server.listen(PORT, () => {

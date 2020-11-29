@@ -4,6 +4,7 @@ import { CurrentMemberContext } from '../../shared/CurrentMember'
 import { LOAD_CHAT_LIST, CHAT_MESSAGE_RECEIVED } from '../../shared/SocketIo/Events'
 import LoadingScreen from '../../shared/LoadingScreen'
 import Moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 import { notification } from 'antd';
 import Avatar from '@material-ui/core/Avatar';
@@ -26,8 +27,10 @@ export const ChatProvider = ({ children }) => {
 
     const [pending, setPending] = useState(true);
 
-    const openNotification = (name, imageUrl, message) => {
+    const openNotification = (name, imageUrl, message, newChatRoom) => {
+        const key = uuidv4()
         notification.open({
+            key,
             message: <div style={{ display: "flex", marginRight: "10px" }}>
                 <Avatar style={{ width: "30px", height: "30px", marginRight: "10px" }} src={imageUrl} >
                     <PersonIcon />
@@ -38,7 +41,9 @@ export const ChatProvider = ({ children }) => {
                 <div style={{ marginLeft: "10px", marginRight: "10px" }}>{message}</div>,
 
             onClick: () => {
-                console.log('Notification Clicked!');
+                console.log('Notification Clicked!' + key);
+                setCurrentChatRoom(newChatRoom);
+                notification.close(key)
             },
         });
     };
@@ -86,8 +91,9 @@ export const ChatProvider = ({ children }) => {
                 if (currentChatRoomRef.current.roomId === newChatRoom.roomId) {
                     setCurrentChatRoom(newChatRoom)
                 } else {
-                    if (newChatRoom.type === "chat")
-                        openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message);
+                    if (newChatRoom.type === "chat") {
+                        openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message, newChatRoom);
+                    }
                 }
 
             })
@@ -132,7 +138,7 @@ export const ChatProvider = ({ children }) => {
                 } else {
                     console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_noooooooooo");
                     setChatRooms([chatRoom, ...currentChatRooms.current])
-                    openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message);
+                    openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message, chatRoom);
                 }
 
                 socket.emit("REQUEST_TO_JOIN_CHAT_ROOM", chatRoom.roomId);
@@ -238,7 +244,7 @@ export const ChatProvider = ({ children }) => {
 
     const sendCoffeeChatMessage = () => {
         /// THIS WHOLE FUNCTION IS HACK COFFEE CHAT SENDING, SHOULD BE DELETED.
-        const toUser = {id: 12429996, fullName: "P̶J̶ ira ♕ Suriyakumaran", largeImageUrl: "https://over.localhost.achievers.com/platform_content/shard_1/ilr/public/user/12429996/KC4jUk85M05TLjYk/icon_med.jpg?1550353617"}
+        const toUser = { id: 12429996, fullName: "P̶J̶ ira ♕ Suriyakumaran", largeImageUrl: "https://over.localhost.achievers.com/platform_content/shard_1/ilr/public/user/12429996/KC4jUk85M05TLjYk/icon_med.jpg?1550353617" }
         if (toUser.id === currentMember.id) {
             return
         }

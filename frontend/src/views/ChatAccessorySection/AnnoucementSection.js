@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         scrollbarColor: theme.palette.primary.main,
         scrollbarWidth: "1px",
         '&::-webkit-scrollbar': {
-            width: '0.8em'
+            width: '0.4em'
         },
         '&::-webkit-scrollbar-track': {
             boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
