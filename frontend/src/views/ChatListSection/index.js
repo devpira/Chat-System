@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         width: "380px",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "-5px 0px 12px",
+      //  boxShadow: "-5px 0px 12px",
         zIndex: 1,
     },
     title: {
@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     panel: {
         padding: 0
     },
+    spacer: {
+        height: "3%",
+    }
     // container: {
     //     flex: 1,
     //    // height: '20%',
@@ -50,16 +53,21 @@ const ChatListSection = () => {
     const classes = useStyles();
 
     return (
-        <Paper className={classes.root} >
-            <img src="https://www.achievers.com/wp-content/uploads/2020/10/Achievers_Logo_CMYK.png" className={classes.logo}></img>
+        <Paper className={classes.root}  elevation={2}>
+            {process.env.REACT_APP_STAND_ALONE === 'true' ?
+                <img src="https://www.achievers.com/wp-content/uploads/2020/10/Achievers_Logo_CMYK.png" className={classes.logo}></img>
+                :
+                <div className={classes.spacer}></div>
+            }
+
             <ContactSearchBar />
 
             <Collapse defaultActiveKey={['1', '2']} ghost className={classes.collapse}>
                 <Panel header="Team Chat Rooms" key="1" className={classes.panel}>
-                        <TeamChatList />
+                    <TeamChatList />
                 </Panel>
                 <Panel header="Personal Chats" key="2">
-                        <ChatList />
+                    <ChatList />
                 </Panel>
             </Collapse>
 

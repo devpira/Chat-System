@@ -86,8 +86,8 @@ export const ChatProvider = ({ children }) => {
                 if (currentChatRoomRef.current.roomId === newChatRoom.roomId) {
                     setCurrentChatRoom(newChatRoom)
                 } else {
-                    if(newChatRoom.type  === "chat")
-                    openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message);
+                    if (newChatRoom.type === "chat")
+                        openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message);
                 }
 
             })
@@ -199,19 +199,20 @@ export const ChatProvider = ({ children }) => {
         setCurrentChatRoom(newChat)
     }
 
-    const generateNewChatMessage = (message) => {
+    const generateNewChatMessage = (message, type) => {
         return {
             uid:
                 currentMember.id,
             name: currentMember.fullName,
             roomId: currentChatRoom.roomId,
             imageUrl: currentMember.largeImageUrl,
+            type,
             time: Moment().format(),
             message,
         }
     }
 
-    const sendNewChatRoomRequest = (initalMessage) => {
+    const sendNewChatRoomRequest = (initalMessage, type) => {
         console.log("initalMessage0", initalMessage);
         const toUser = currentChatRoom.participants.filter((item) => item.id !== currentMember.id)[0];
         let roomId;
@@ -220,7 +221,7 @@ export const ChatProvider = ({ children }) => {
         } else {
             roomId = currentMember.id + "-" + toUser.id;
         }
-        const chatMessage = generateNewChatMessage(initalMessage);
+        const chatMessage = generateNewChatMessage(initalMessage, type);
         const chatRoom = { ...currentChatRoom, roomId, chatMessages: [chatMessage] }
         socket.emit("CREATE_NEW_CHAT_ROOM", toUser.id, roomId, chatRoom)
     }
@@ -228,11 +229,30 @@ export const ChatProvider = ({ children }) => {
     const sendChatMessage = (message) => {
         if (message) {
             if (currentChatRoom.roomId) {
-                socket.emit("CHAT_MESSAGE_SEND", generateNewChatMessage(message));
+                socket.emit("CHAT_MESSAGE_SEND", generateNewChatMessage(message, "message"));
             } else {
-                sendNewChatRoomRequest(message);
+                sendNewChatRoomRequest(message, "message");
             }
         }
+    }
+
+    const sendCoffeeChatMessage = () => {
+        /// THIS WHOLE FUNCTION IS HACK COFFEE CHAT SENDING, SHOULD BE DELETED.
+        const toUser = {id: 12429996, fullName: "P̶J̶ ira ♕ Suriyakumaran", largeImageUrl: "https://over.localhost.achievers.com/platform_content/shard_1/ilr/public/user/12429996/KC4jUk85M05TLjYk/icon_med.jpg?1550353617"}
+        if (toUser.id === currentMember.id) {
+            return
+        }
+        const newRoom = generateNewChatRoom(toUser)
+        let roomId;
+        if (toUser.id > currentMember.id) {
+            roomId = toUser.id + "-" + currentMember.id;
+        } else {
+            roomId = currentMember.id + "-" + toUser.id;
+        }
+
+        const chatMessage = generateNewChatMessage("NEW COFFEE CHAT HAS ARRIVED!", "coffee-chat");
+        const chatRoom = { ...newRoom, roomId, chatMessages: [chatMessage] }
+        socket.emit("CREATE_NEW_CHAT_ROOM", toUser.id, roomId, chatRoom)
     }
 
     if (pending) {
@@ -249,7 +269,8 @@ export const ChatProvider = ({ children }) => {
                     chatRooms,
                     createPreChat,
                     sendChatMessage,
-                    currentMemberId: currentMember.id
+                    currentMemberId: currentMember.id,
+                    sendCoffeeChatMessage
                 }
             }
         >

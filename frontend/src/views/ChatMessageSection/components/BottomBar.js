@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Paper, IconButton, InputBase } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import Popover from '@material-ui/core/Popover';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -15,7 +16,6 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         //borderBottom: "1px solid grey"
     },
-
 
     icon: {
         fontSize: "28px"
@@ -38,12 +38,25 @@ const useStyles = makeStyles(theme => ({
         padding: 10,
         color: theme.palette.primary.main
     },
+    emojiPopover: {
+        // marginLeft: theme.spacing(40),
+        marginRight: theme.spacing(40),
+
+    }
 }));
+const emojiList = ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐",
+    "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐",
+    "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾",
+    "👋", "🤚", "🖐", "✋", "🖖", "👌", "🤞", "🤟", "🤘", "🤙", "👍", "👎", "✊", "👊", "🤛", "🤜", "👏", "🙌", "👐", "🤲 ", "🤝", "🙏", "🍦", "🥧", "🧁", "🍫"];
 
 const BottomBar = ({ className, onMessageSend }) => {
 
     const classes = useStyles();
     const [message, setMessage] = useState("");
+    const messageRef = useRef();
+    messageRef.current = message;
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const onChange = (e) => {
         setMessage(e.target.value)
@@ -54,17 +67,29 @@ const BottomBar = ({ className, onMessageSend }) => {
             e.preventDefault();
             setMessage(""); onMessageSend(message);
         }
-
     }
+
+    const handleEmojiButtonClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseEmojis = () => {
+        setAnchorEl(null);
+    };
+
+    const onEmjoiSelected = (emoji) => {
+        setMessage(messageRef.current + emoji)
+        handleCloseEmojis();
+    }
+
+    const open = Boolean(anchorEl);
 
     return (
         <Paper
-            elevation={1}
-            square={true}
             className={clsx(classes.root, className)}
         >
             <Paper component="form" elevation={1} className={classes.textInput}>
-                <IconButton className={classes.iconButton} aria-label="search">
+                <IconButton className={classes.iconButton} aria-label="search" onClick={handleEmojiButtonClick}>
                     <EmojiEmotionsIcon />
                 </IconButton>
                 <InputBase
@@ -79,8 +104,26 @@ const BottomBar = ({ className, onMessageSend }) => {
                     <SendIcon />
                 </IconButton>
             </Paper>
-
-
+            <Popover
+                open={open}
+                className={classes.emojiPopover}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                onClose={handleCloseEmojis}
+            >
+                {emojiList.map((item, index) => {
+                    return <IconButton key={index} className={classes.iconButton} onClick={() => onEmjoiSelected(item)} >
+                        {item}
+                    </IconButton>
+                })}
+            </Popover>
         </Paper>
     );
 };

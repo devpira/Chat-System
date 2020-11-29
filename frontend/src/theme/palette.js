@@ -9,7 +9,7 @@ export default {
   primary: {
     contrastText: white,
     dark: colors.purple[800],
-    main: colors.purple[500],
+    main: '#4d058d',
     light: colors.purple[100]
   },
   secondary: {

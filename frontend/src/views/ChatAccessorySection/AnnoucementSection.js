@@ -51,7 +51,7 @@ const AnnouncementSection = ({ value, index }) => {
     useEffect(() => {
         if (oAuthToken) {
             console.log(oAuthToken)
-            axios.get("https://over.localhost.achievers.com/api/v5/announcements",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/announcements`,
                 {
                     headers: {
                         //'Content-Type': 'application/json',

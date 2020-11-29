@@ -12,10 +12,9 @@ const useStyles = makeStyles((theme) => ({
         width: "420px",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "9px 0px 20px",
+      //  boxShadow: "9px 0px 20px",
         zIndex: 1,
         overflowY: "auto",
-
     },
     tabHolder: {
         backgroundColor: theme.palette.background.paper,
@@ -40,7 +39,7 @@ const ChatRecoSection = () => {
     };
 
     return (
-        <Paper className={classes.root} >
+        <Paper className={classes.root} elevation={2}>
             <div className={classes.tabHolder}>
                 <AntTabs value={value} onChange={handleChange} aria-label="chat accessory tabs">
                     <AntTab label="Recognitions" />

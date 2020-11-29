@@ -61,7 +61,7 @@ const CelebrationSection = ({ value, index }) => {
 
     useEffect(() => {
         if (oAuthToken) {
-            axios.get("https://over.localhost.achievers.com/api/v5/upcoming-celebrations",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/upcoming-celebrations`,
                 {
                     params: {
                         startDate: Moment().format(),

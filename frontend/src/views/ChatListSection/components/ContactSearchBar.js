@@ -112,7 +112,7 @@ const ContactSearchBar = () => {
 
     useEffect(() => {
         if (inputValue) {
-            axios.get("https://over.localhost.achievers.com/api/v5/search",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/search`,
                 {
                     params: {
                         q: inputValue,

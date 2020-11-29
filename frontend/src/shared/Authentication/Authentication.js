@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
             state: Math.random(),
         }
 
-        const loginUrl = buildUrl("http://over.localhost.achievers.com", {
+        const loginUrl = buildUrl(process.env.REACT_APP_OVER_URL, {
             path: '/oauth/v2/openIDConnectClient/authorize',
             queryParams: authParams,
         });
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
                 client_secret: "2805bc4c6f4c827a2fa51ff2fe2978f25f635292f1db8bf9d3f233475679f266",
             }
 
-            axios.post("https://over.localhost.achievers.com/oauth/v2/openIDConnectClient/token?XDEBUG_SESSION_START=PHPSTORM", authParams, {
+            axios.post(`${process.env.REACT_APP_OVER_URL}/oauth/v2/openIDConnectClient/token?XDEBUG_SESSION_START=PHPSTORM`, authParams, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

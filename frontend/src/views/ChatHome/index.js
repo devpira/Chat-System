@@ -8,11 +8,16 @@ import { VideoChatContext } from '../../providers/VideoChatProvider';
 
 import VideoChatCallDialog from '../VideoChatCallDialog'
 import VideoChatView from '../VideoChatView'
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
         display: "flex",
+        // paddingTop: theme.spacing(4),
+        padding: theme.spacing(5),
+        // boxShadow: "9px 0px 20px",
+        backgroundColor: "#f4f7fa",
     },
     content: {
         height: '100%',
@@ -35,11 +40,11 @@ const MainChat = () => {
 
     const { callingMember, endCallingUser, callUser, isCallIncoming, declineCall, onCall, answerCall } = useContext(VideoChatContext)
 
-    console.log("callingMember", callingMember)
+    console.log("process.env.REACT_APP_STAND_ALONE", process.env.REACT_APP_STAND_ALONE)
     return (
         <>
-            <div className={classes.root}>
-                <SidePanel />
+            <div className={classes.root} square>
+                {process.env.REACT_APP_STAND_ALONE === 'true' && <SidePanel />}
                 <ChatListSection />
                 <ChatMessageSection />
                 <ChatRecoSection />

@@ -142,8 +142,13 @@ export const VideoChatProvider = ({ children }) => {
 
         if (peerConnectionRef.current) {
             peerConnectionRef.current.disconnect();
+        }
+
+        if (peerConnectionRef.current) {
+            //Just in case disconnect didn't kill the connection.
             peerConnectionRef.current.destroy();
         }
+
         setPeerConnection(null);
         setCallingStreamerId(null);
         setCallingMember(null);

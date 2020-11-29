@@ -20,7 +20,6 @@ peerServer.on('disconnect', (client) => {
     console.log("disconnected: ", client);
 });
 
-
 server.listen(PORT, () => {
     console.log("Peer Server Connected to port: " + PORT);
 });

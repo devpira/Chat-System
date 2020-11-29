@@ -6,18 +6,28 @@ import BottomBar from './components/BottomBar';
 import FromChatBubble from './components/FromChatBubble';
 import ToChatBubble from './components/ToChatBubble';
 
-import { ChatContext } from '../../providers/ChatProvider'
-import { CurrentMemberContext } from '../../shared/CurrentMember'
+import { ChatContext } from '../../providers/ChatProvider';
+import { CurrentMemberContext } from '../../shared/CurrentMember';
+import CoffeeChatMessage from './components/CoffeeChatMessage';
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
         //width: "65px",
-        backgroundColor: "#f3f6fb",
+        //backgroundColor: "#f3f6fb",
+        backgroundColor: "#f4f7fa",
         flex: 1,
         //borderRadius: "10px",
-        padding: theme.spacing(4),
+        // padding: theme.spacing(4),
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        display: "flex",
+        flexDirection: "column",
+    },
+    content: {
+        height: '100%',
+        width: "100",
         display: "flex",
         flexDirection: "column",
     },
@@ -81,21 +91,28 @@ const ChatMessageSection = () => {
 
 
     return (
-        <div className={classes.root}>
-            {currentChatRoom && chatRooms.length > 0 && otherParticipant ? <>
-                <Topbar participant={otherParticipant} />
-                <Paper className={classes.body} square >
-                    <div ref={messagesEndRef}>
-                        {
-                            currentChatRoom.chatMessages.map((item, index) => {
-                                return item.uid === currentMember.id ? <ToChatBubble key={index} message={item} imageUrl={currentMember.profileImageUrl} displayName={currentMember.preferredFirstName + " " + currentMember.lastName} />
-                                    : <FromChatBubble key={index} message={item.message} imageUrl={item.imageUrl} />
-                            })
-                        }
+        <div className={classes.root} >
+            {currentChatRoom && chatRooms.length > 0 && otherParticipant ?
+                <Paper className={classes.content} elevation={2} >
+                    <Topbar participant={otherParticipant} />
+                    <div className={classes.body} square elevation={2} >
+                        <div ref={messagesEndRef}>
+                            {
+                                currentChatRoom.chatMessages.map((item, index) => {
+                                    if (item.type === "message") {
+                                        return item.uid === currentMember.id ? <ToChatBubble key={index} message={item} imageUrl={currentMember.profileImageUrl} displayName={currentMember.preferredFirstName + " " + currentMember.lastName} />
+                                            : <FromChatBubble key={index} message={item.message} imageUrl={item.imageUrl} />
+                                    } else if (item.type === "coffee-chat") {
+                                        return <CoffeeChatMessage otherParticipant={otherParticipant} />
+                                    }
+                                })
+                            }
+                        </div>
+
                     </div>
+                    <BottomBar onMessageSend={sendChatMessage} />
                 </Paper>
-                <BottomBar onMessageSend={sendChatMessage} />
-            </> : <div ref={messagesEndRef}></div>}
+                : <div ref={messagesEndRef}></div>}
 
         </div>
 

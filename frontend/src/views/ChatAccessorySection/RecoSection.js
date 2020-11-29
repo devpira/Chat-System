@@ -51,7 +51,7 @@ const RecoSection = ({ value, index }) => {
     useEffect(() => {
         if (oAuthToken) {
             console.log(oAuthToken)
-            axios.get("https://over.localhost.achievers.com/api/v5/newsfeed-events",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/newsfeed-events`,
                 {
                     headers: {
                         //'Content-Type': 'application/json',
