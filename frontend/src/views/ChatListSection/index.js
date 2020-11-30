@@ -6,6 +6,9 @@ import ContactSearchBar from './components/ContactSearchBar';
 import ChatList from './components/ChatList';
 import TeamChatList from './components/TeamChatList';
 
+
+import { useNode } from "@craftjs/core";
+
 import { Collapse } from 'antd';
 const { Panel } = Collapse;
 
@@ -15,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         width: "380px",
         display: "flex",
         flexDirection: "column",
-      //  boxShadow: "-5px 0px 12px",
+        //  boxShadow: "-5px 0px 12px",
         zIndex: 1,
     },
     title: {
@@ -51,9 +54,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatListSection = () => {
     const classes = useStyles();
+    const { connectors: { connect, drag } } = useNode();
 
     return (
-        <Paper className={classes.root}  elevation={2}>
+        <Paper
+            ref={ref => connect(drag(ref))}
+            className={classes.root}
+            elevation={2}
+        >
             {process.env.REACT_APP_STAND_ALONE === 'true' ?
                 <img src="https://www.achievers.com/wp-content/uploads/2020/10/Achievers_Logo_CMYK.png" className={classes.logo}></img>
                 :
@@ -73,6 +81,13 @@ const ChatListSection = () => {
 
         </Paper>
     );
+}
+
+ChatListSection.craft = {
+    displayName: 'ChatListSection',
+    rules: {
+        canDrag: () => true,
+    },
 }
 
 export default ChatListSection;

@@ -10,6 +10,7 @@ import { ChatContext } from '../../providers/ChatProvider';
 import { CurrentMemberContext } from '../../shared/CurrentMember';
 import CoffeeChatMessage from './components/CoffeeChatMessage';
 
+import { useNode } from "@craftjs/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -64,6 +65,8 @@ const ChatMessageSection = () => {
     const { currentMember } = useContext(CurrentMemberContext);
     const [otherParticipant, setOtherParticipant] = useState();
 
+    const { connectors: { connect, drag } } = useNode();
+
     useEffect(() => {
         messagesEndRef.current.scrollIntoView({ block: 'end', })
     }, [currentChatRoom]);
@@ -91,7 +94,7 @@ const ChatMessageSection = () => {
 
 
     return (
-        <div className={classes.root} >
+        <div ref={ref => connect(drag(ref))} className={classes.root} >
             {currentChatRoom && chatRooms.length > 0 && otherParticipant ?
                 <Paper className={classes.content} elevation={2} >
                     <Topbar participant={otherParticipant} />
@@ -117,6 +120,13 @@ const ChatMessageSection = () => {
         </div>
 
     );
+}
+
+ChatMessageSection.craft = {
+    displayName: 'ChatMessageSection',
+    rules: {
+        canDrag: () => true,
+    },
 }
 
 export default ChatMessageSection;

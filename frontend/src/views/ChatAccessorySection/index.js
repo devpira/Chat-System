@@ -6,6 +6,8 @@ import RecoSection from './RecoSection'
 import AnnoucementSection from './AnnoucementSection'
 import CelebrationSection from './CelebrationSection'
 
+import { useNode } from "@craftjs/core";
+
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
@@ -33,13 +35,13 @@ const ChatRecoSection = () => {
     const classes = useStyles();
 
     const [value, setValue] = useState(0);
-
+    const { connectors: { connect, drag } } = useNode();
     const handleChange = (_, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <Paper className={classes.root} elevation={2}>
+        <Paper ref={ref => connect(drag(ref))} className={classes.root} elevation={2}>
             <div className={classes.tabHolder}>
                 <AntTabs value={value} onChange={handleChange} aria-label="chat accessory tabs">
                     <AntTab label="Recognitions" />
@@ -54,6 +56,13 @@ const ChatRecoSection = () => {
             </div>
         </Paper>
     );
+}
+
+ChatRecoSection.craft = {
+    displayName: 'ChatRecoSection',
+    rules: {
+        canDrag: () => true,
+    },
 }
 
 export default ChatRecoSection
