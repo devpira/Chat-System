@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const Topbar = ({ className, participant, tabIndex, handleTabIndexChange }) => {
+const Topbar = ({ className, sendCoffeeChatMessage, participant, tabIndex, handleTabIndexChange }) => {
     const classes = useStyles();
     const { startCallingUser } = useContext(VideoChatContext)
 

@@ -4,7 +4,7 @@ const io = require('socket.io')(server);
 const PORT = process.env.PORT || 5000;
 require('isomorphic-fetch');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 const {
     isValidChatRoomCreation,
@@ -25,7 +25,7 @@ io.use(async (socket, next) => {
         new Error("Failed to authenticate.")
     }
 
-    fetch(`https://over.localhost.achievers.com/api/v5/current-member`, {
+    fetch(`https://over.sandbox.achievers.com/api/v5/current-member`, {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${socket.token}`,
