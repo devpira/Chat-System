@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+  achat-frontend: 
+    build: 
+      context: ./frontend
+    image: achat-frontend:latest
+    container_name: achat-frontend
+    ports:
+      - "80:80"
+    networks:
+      - achat-network
+
+  socketio-server: 
+    build: 
+      context: ./socketio-server
+    image: socketio-server
+    container_name: socketio-server
+    ports:
+      - "5000:5000"
+    networks:
+      - achat-network
+
+  peer-server: 
+    build: 
+      context: ./peer-server
+    image: peer-server
+    container_name: peer-server
+    ports:
+      - "9000:9000"
+    networks:
+      - achat-network
+   
+networks:
+  achat-network:
+    driver: bridge
