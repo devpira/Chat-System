@@ -41,7 +41,6 @@ export const ChatProvider = ({ children }) => {
                 <div style={{ marginLeft: "10px", marginRight: "10px" }}>{message}</div>,
 
             onClick: () => {
-                console.log('Notification Clicked!' + key);
                 setCurrentChatRoom(newChatRoom);
                 notification.close(key)
             },

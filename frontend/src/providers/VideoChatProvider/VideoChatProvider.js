@@ -126,7 +126,7 @@ export const VideoChatProvider = ({ children }) => {
 
     const startVideoCall = (userId) => {
         setOnCall(true);
-        const connection = new Peer({ host: 'localhost', port: 9000, path: '/peerjs' })
+        const connection = new Peer({ host: process.env.REACT_APP_PEER_HOST, port: process.env.REACT_APP_PEER_PORT, path: '/peerjs' })
 
         connection.on('open', id => {
             console.log("Peer connection opned: ", id)
