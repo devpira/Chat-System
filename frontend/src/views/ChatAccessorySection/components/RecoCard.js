@@ -87,15 +87,18 @@ const RecoCard = ({ reco }) => {
                     }
 
                 />
-
-                <img src={!process.env.REACT_APP_CAN_LOAD_IMAGE === 'true' ? reco.imageHref : reco.imageHref.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
+                {reco.imageHref &&
+                    <img src={!process.env.REACT_APP_CAN_LOAD_IMAGE === 'true' ? reco.imageHref : reco.imageHref.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
+                }
                 <CardContent>
-                    <div className={classes.creatorProfile}>
-                        <Avatar alt={reco.creator.name} src={reco.creator.profileImageUrl} className={classes.creatorAvatar} />
-                        <Typography variant="body2" component="p">
-                            <strong>{reco.creator.name}</strong>
-                        </Typography>
-                    </div>
+                    {reco.creator.profileImageUrl &&
+                        <div className={classes.creatorProfile}>
+                            <Avatar alt={reco.creator.name} src={reco.creator.profileImageUrl} className={classes.creatorAvatar} />
+                            <Typography variant="body2" component="p">
+                                <strong>{reco.creator.name}</strong>
+                            </Typography>
+                        </div>
+                    }
                     <Typography variant="h4" component="h2">
                         {reco.title}
                     </Typography>
