@@ -54,7 +54,7 @@ const ChatList = () => {
                     })}
                 </ListItem>
             })}
-          
+
         </List>
     );
 }

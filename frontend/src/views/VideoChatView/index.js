@@ -83,7 +83,6 @@ const VideoChatView = ({ open }) => {
 
 
                     peerConnection.on('call', call => {
-                        console.log("onCall Called")
                         call.answer(mediaStream)
                         const video2 = document.getElementById("videoElement2");
                         call.on('stream', userVideoStream => {
@@ -95,7 +94,6 @@ const VideoChatView = ({ open }) => {
                     })
 
                     peerConnection.on('disconnected', call => {
-                        console.log("cloooooosee@@@@@@@@")
                         endVideoCall(false)
                     })
 

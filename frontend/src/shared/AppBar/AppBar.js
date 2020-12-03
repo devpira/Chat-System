@@ -22,8 +22,7 @@ const useStyles = makeStyles(theme => ({
         height: "3px"
     },
     appBar: {
-         zIndex: 0,
-        //  flexGrow: 1,
+        zIndex: 0,
         backgroundColor: "#fff",
     },
     spoacer: {
@@ -42,7 +41,6 @@ const useStyles = makeStyles(theme => ({
     buttonRight: {
         marginRight: theme.spacing(1),
     }
-
 }));
 
 const AppBar = () => {
@@ -113,7 +111,7 @@ const AppBar = () => {
                 >
                     Account
                 </Button>
-                <Avatar src={currentMember? currentMember.profileImageUrl : ""} className={classes.avatar}>
+                <Avatar src={currentMember ? currentMember.profileImageUrl : ""} className={classes.avatar}>
                     <PersonIcon />
                 </Avatar>
             </Toolbar>

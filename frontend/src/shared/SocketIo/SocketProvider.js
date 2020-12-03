@@ -18,18 +18,14 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         const socket = io(socketUrl, { query: { token: oAuthToken } });
-        console.log("CREATRED")
         socket.on(CONNECT_ERROR, (error) => {
             console.log("Failed to connect")
             console.log(error)
-            // setAuthError(error)
-            // FirebaseAuth.auth().signOut();
         });
 
         socket.on(ERROR, (error) => {
             console.log("connection failed....")
             console.log(error)
-            // FirebaseAuth.auth().signOut();
         });
 
         socket.on(CONNECT, () => {
@@ -37,11 +33,10 @@ export const SocketProvider = ({ children }) => {
 
             socket.on(AUTH_FAIL, () => {
                 console.log("Auth failed....")
-                // FirebaseAuth.auth().signOut();
             });
 
             socket.on(DISCONNECTED, () => {
-                console.log("Discconnected your boy")
+                console.log("Discconnected")
             });
         })
 

@@ -87,18 +87,12 @@ const ChatMessageSection = () => {
 
     }, [currentChatRoom])
 
-
-    console.log("currentChatRoom", currentChatRoom)
-    console.log("chatRooms", chatRooms)
-    console.log("currentMember", currentMember)
-
-
     return (
         <div ref={ref => connect(drag(ref))} className={classes.root} >
             {currentChatRoom && chatRooms.length > 0 && otherParticipant ?
                 <Paper className={classes.content} elevation={2} >
                     <Topbar participant={otherParticipant} />
-                    <div className={classes.body} square elevation={2} >
+                    <div className={classes.body} elevation={2} >
                         <div ref={messagesEndRef}>
                             {
                                 currentChatRoom.chatMessages.map((item, index) => {

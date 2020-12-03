@@ -50,7 +50,6 @@ const AnnouncementSection = ({ value, index }) => {
 
     useEffect(() => {
         if (oAuthToken) {
-            console.log(oAuthToken)
             axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/announcements`,
                 {
                     headers: {
@@ -59,7 +58,6 @@ const AnnouncementSection = ({ value, index }) => {
                     }
                 }).then(function (response) {
                     if (response.data && response.data.items) {
-                        console.log("AnnouncementCard", response.data)
                         setAnnouncementsList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load announcements. Please reload the page and try again.")

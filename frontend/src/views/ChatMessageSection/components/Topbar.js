@@ -47,7 +47,6 @@ const Topbar = ({ className, participant }) => {
     const { sendCoffeeChatMessage } = useContext(ChatContext)
 
     const videoCallUser = () => {
-        console.log("CALL")
         startCallingUser(participant.id, participant.name, participant.imageUrl)
     }
 

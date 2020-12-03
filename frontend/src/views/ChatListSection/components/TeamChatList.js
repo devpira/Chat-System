@@ -41,7 +41,7 @@ const TeamChatList = () => {
                     <Avatar src={item.imageUrl} className={classes.avatar}>
                         <PersonIcon />
                     </Avatar>
-                    <ListItemText primary={<strong>{item.name}</strong>}  />
+                    <ListItemText primary={<strong>{item.name}</strong>} />
                 </ListItem>
             })}
 

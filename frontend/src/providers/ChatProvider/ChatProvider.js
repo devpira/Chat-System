@@ -49,11 +49,8 @@ export const ChatProvider = ({ children }) => {
 
     useEffect(() => {
 
-        if (!socket.hasListeners("LOAD_CHAT_LIST")) {
-
-            socket.on("LOAD_CHAT_LIST", (chatList) => {
-
-                console.log(LOAD_CHAT_LIST, chatList)
+        if (!socket.hasListeners(LOAD_CHAT_LIST)) {
+            socket.on(LOAD_CHAT_LIST, (chatList) => {
                 setChatRooms(chatList);
                 if (chatList.length > 0) {
                     setCurrentChatRoom(chatList[0])
@@ -65,8 +62,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners(CHAT_MESSAGE_RECEIVED)) {
             socket.on(CHAT_MESSAGE_RECEIVED, (receviedMessage) => {
-                console.log("CHAT_MESSAGE_RECEIVED", receviedMessage);
-
                 const roomId = receviedMessage.roomId;
                 const chatRoom = currentChatRooms.current.filter((item) => item.roomId === roomId)
                 const index = currentChatRooms.current.findIndex((item) => item.roomId === roomId)
@@ -100,7 +95,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("ON_NEW_CHAT_ROOM_CREATED")) {
             socket.on("ON_NEW_CHAT_ROOM_CREATED", (createdChatRoom) => {
-                console.log("ON_NEW_CHAT_ROOM_CREATED", createdChatRoom);
                 setChatRooms([createdChatRoom, ...currentChatRooms.current])
                 setCurrentChatRoom(createdChatRoom)
             })
@@ -108,18 +102,15 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("ON_NEW_CHAT_ROOM_CREATED_FAILED")) {
             socket.on("ON_NEW_CHAT_ROOM_CREATED_FAILED", (errorMessage) => {
-                console.log("ON_NEW_CHAT_ROOM_CREATED_FAILED", errorMessage);
                 // TO-DO - show error to user!
             })
         }
 
         if (!socket.hasListeners("SEND_REQUEST_TO_JOIN_CHAT_ROOM")) {
             socket.on("SEND_REQUEST_TO_JOIN_CHAT_ROOM", (chatRoom) => {
-                console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM", chatRoom);
                 //first check if room already exists:
                 const existChatRoom = currentChatRooms.current.filter((item) => item.roomId === chatRoom.roomId)
                 if (existChatRoom.length > 0) {
-                    console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_1");
                     // TO-DO - This part of is similar to CHAT_MESSAGE_RECEIVED. Should create common function.
                     const index = currentChatRooms.current.findIndex((item) => item.roomId === chatRoom.roomId)
                     let newChatRooms = [...currentChatRooms.current];
@@ -135,7 +126,6 @@ export const ChatProvider = ({ children }) => {
                     setChatRooms(newChatRooms)
                     return;
                 } else {
-                    console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_noooooooooo");
                     setChatRooms([chatRoom, ...currentChatRooms.current])
                     openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message, chatRoom);
                 }
@@ -146,7 +136,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("REQUEST_TO_JOIN_CHAT_ROOM_FAILED")) {
             socket.on("REQUEST_TO_JOIN_CHAT_ROOM_FAILED", (roomId, errorMessage) => {
-                console.log("REQUEST_TO_JOIN_CHAT_ROOM_FAILED", errorMessage);
                 // remove room Id we added, earlier just in case:
                 setChatRooms(currentChatRooms.current.filter((room) => room.id !== roomId));
                 // TO-DO - show error to user!
@@ -177,7 +166,6 @@ export const ChatProvider = ({ children }) => {
     }
 
     const createPreChat = (member) => {
-        console.log("CREATE CHAT", member)
         const memberId = member.id;
 
         // Check to see if chat room already exists:
@@ -218,7 +206,6 @@ export const ChatProvider = ({ children }) => {
     }
 
     const sendNewChatRoomRequest = (initalMessage, type) => {
-        console.log("initalMessage0", initalMessage);
         const toUser = currentChatRoom.participants.filter((item) => item.id !== currentMember.id)[0];
         let roomId;
         if (toUser.id > currentMember.id) {

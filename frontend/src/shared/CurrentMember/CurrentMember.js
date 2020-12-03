@@ -12,7 +12,6 @@ export const CurrentMemberProvider = ({ children }) => {
     useEffect(() => {
         if (!socket.hasListeners(LOAD_CURRENT_MEMBER)) {
             socket.on(LOAD_CURRENT_MEMBER, (loadedMember) => {
-                console.log(LOAD_CURRENT_MEMBER, loadedMember)
                 setCurrentMember(loadedMember);
             })
         }

@@ -81,7 +81,7 @@ const VideoChatCallDialog = ({ open, endCallingUser, callingMember, callUser, is
         setStartCall(true);
         callUser(callingMember.id)
     }
-    console.log("isCallIncoming", isCallIncoming)
+
     return (
         <Dialog aria-labelledby="simple-dialog-title" open={open}>
             <div className={classes.root} >
