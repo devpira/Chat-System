@@ -33,15 +33,16 @@ export const SocketProvider = ({ children }) => {
 
             socket.on(AUTH_FAIL, () => {
                 console.log("Auth failed....")
+                setSocket(null)
+                setPending(true)
             });
 
             socket.on(DISCONNECTED, () => {
                 console.log("Discconnected")
             });
+            setSocket(socket)
+            setPending(false)
         })
-
-        setSocket(socket)
-        setPending(false)
     }, []);
 
     if (pending) {
