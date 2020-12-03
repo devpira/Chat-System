@@ -102,7 +102,6 @@ const VideoChatView = ({ open }) => {
                 .catch((err) => {
                     console.log(err.name + ": " + err.message);
                 });
-
         }
     }, [peerConnection, callingMember])
 
@@ -112,14 +111,12 @@ const VideoChatView = ({ open }) => {
             const video2 = document.getElementById("videoElement2");
             video2.muted = true
             call.on('stream', userVideoStream => {
-                console.log("on stream")
                 video2.srcObject = userVideoStream;
                 video2.onloadedmetadata = () => {
                     video2.play();
                 };
             })
             call.on('close', () => {
-                console.log("onclose")
                 video2.remove()
             })
             setCall(call);

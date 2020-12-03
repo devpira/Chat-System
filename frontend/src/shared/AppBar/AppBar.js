@@ -65,6 +65,7 @@ const AppBar = () => {
                     size="large"
                     className={classes.buttonLeft}
                     startIcon={<GroupIcon />}
+                    onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/beta/", "_self")}
                 >
                     <strong>Community</strong>
                 </Button>
@@ -73,6 +74,7 @@ const AppBar = () => {
                     size="large"
                     className={classes.buttonLeft}
                     startIcon={<PersonIcon />}
+                    onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/beta/me", "_self")}
                 >
                     <strong>ME</strong>
                 </Button>
@@ -88,19 +90,19 @@ const AppBar = () => {
                 <IconButton className={classes.menuButton} aria-label="search">
                     <SearchIcon />
                 </IconButton>
-                <Button
+                {/* <Button
                     // color="primary"
                     size="large"
                     className={classes.buttonRight}
-
+                    onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/beta/me", "_self")}
                 >
                     Admin
-                </Button>
+                </Button> */}
                 <Button
                     // color="primary"
                     size="large"
                     className={classes.buttonRight}
-
+                    onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/beta/help", "_self")}
                 >
                     Help
                 </Button>
@@ -108,6 +110,7 @@ const AppBar = () => {
                     //color="primary"
                     size="large"
                     className={classes.buttonRight}
+                    onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/beta/account_settings", "_self")}
                 >
                     Account
                 </Button>
