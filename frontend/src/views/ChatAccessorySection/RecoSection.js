@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         scrollbarColor: theme.palette.primary.main,
         scrollbarWidth: "1px",
         '&::-webkit-scrollbar': {
-            width: '0.8em'
+            width: '0.4em'
         },
         '&::-webkit-scrollbar-track': {
             boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
@@ -50,8 +50,7 @@ const RecoSection = ({ value, index }) => {
 
     useEffect(() => {
         if (oAuthToken) {
-            console.log(oAuthToken)
-            axios.get("https://over.localhost.achievers.com/api/v5/newsfeed-events",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/newsfeed-events`,
                 {
                     headers: {
                         //'Content-Type': 'application/json',
@@ -59,7 +58,6 @@ const RecoSection = ({ value, index }) => {
                     }
                 }).then(function (response) {
                     if (response.data && response.data.items) {
-                        console.log(response.data)
                         setRecoList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load recognitions. Please reload the page and try again.")

@@ -1,4 +1,3 @@
-
 export const CONNECT = "connect";
 export const DISCONNECTED = "disconnected";
 export const CONNECT_ERROR = "connect_error";

@@ -112,7 +112,7 @@ const ContactSearchBar = () => {
 
     useEffect(() => {
         if (inputValue) {
-            axios.get("https://over.localhost.achievers.com/api/v5/search",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/search`,
                 {
                     params: {
                         q: inputValue,
@@ -122,17 +122,12 @@ const ContactSearchBar = () => {
                         'Authorization': `Bearer ${oAuthToken}`,
                     }
                 }).then(function (response) {
-                   // console.log(response)
                     if (response.data && response.data.members) {
-
                         setMemberlist(response.data.members.filter((item) => (item.displayValues[3].value)))
-                        console.log("member search: ", response.data)
-                        //setCelebrationList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load celebrations. Please reload the page and try again.")
                     }
                 }).catch(function (error) {
-                    console.log(error)
                     setError("Unexpected error occurred while trying to load celebrations. Please reload the page and try again.")
                 });
         }

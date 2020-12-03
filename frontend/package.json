@@ -23,6 +23,8 @@
     "react-scripts": "4.0.0",
     "socket.io": "^2.3.0",
     "styled-components": "^5.2.1",
+    "@craftjs/core": "^0.1.0-beta.13",
+    "uuid": "^8.3.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

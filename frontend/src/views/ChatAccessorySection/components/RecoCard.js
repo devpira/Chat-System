@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import clsx from 'clsx';
@@ -88,7 +88,7 @@ const RecoCard = ({ reco }) => {
 
                 />
 
-                <img src={reco.imageHref.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
+                <img src={!process.env.REACT_APP_CAN_LOAD_IMAGE === 'true' ? reco.imageHref : reco.imageHref.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
                 <CardContent>
                     <div className={classes.creatorProfile}>
                         <Avatar alt={reco.creator.name} src={reco.creator.profileImageUrl} className={classes.creatorAvatar} />
@@ -120,7 +120,7 @@ const RecoCard = ({ reco }) => {
                     </Button>
                     <Button
                         size="small"
-                        onClick={()=> window.open(reco.publicUrl)}
+                        onClick={() => window.open(reco.publicUrl)}
                         aria-label="view"
                     >
                         View

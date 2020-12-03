@@ -10,6 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
 
 import { VideoChatContext } from '../../../providers/VideoChatProvider';
+import { ChatContext } from '../../../providers/ChatProvider';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -43,16 +44,14 @@ const useStyles = makeStyles(theme => ({
 const Topbar = ({ className, participant }) => {
     const classes = useStyles();
     const { startCallingUser } = useContext(VideoChatContext)
+    const { sendCoffeeChatMessage } = useContext(ChatContext)
 
     const videoCallUser = () => {
-        console.log("CALL")
         startCallingUser(participant.id, participant.name, participant.imageUrl)
     }
 
     return (
         <Paper
-            elevation={1}
-            square={true}
             className={clsx(classes.root, className)}
         >
             <div className={classes.topAlignSection}>
@@ -68,8 +67,8 @@ const Topbar = ({ className, participant }) => {
                     <VideocamIcon className={classes.icon} />
                 </IconButton>
                 }
-
-                <IconButton aria-label="options" color="primary">
+                {/* {This part is to hack coffee chat sending. Should be deleted in future:} */}
+                <IconButton aria-label="options" color="primary" onClick={sendCoffeeChatMessage}>
                     <MoreVertIcon className={classes.icon} />
                 </IconButton>
 

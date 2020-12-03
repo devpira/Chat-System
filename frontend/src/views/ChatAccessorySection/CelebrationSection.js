@@ -61,7 +61,7 @@ const CelebrationSection = ({ value, index }) => {
 
     useEffect(() => {
         if (oAuthToken) {
-            axios.get("https://over.localhost.achievers.com/api/v5/upcoming-celebrations",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/upcoming-celebrations`,
                 {
                     params: {
                         startDate: Moment().format(),
@@ -75,7 +75,6 @@ const CelebrationSection = ({ value, index }) => {
                     }
                 }).then(function (response) {
                     if (response.data && response.data.items) {
-                        console.log("celebrations: ", response.data)
                         setCelebrationList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load celebrations. Please reload the page and try again.")

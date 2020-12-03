@@ -40,7 +40,7 @@ const SidePanel = () => {
     const { currentMember } = useContext(CurrentMemberContext);
 
     return (
-        <Paper className={classes.root} elevation={3} square={true}>
+        <Paper className={classes.root} elevation={3}>
             <div className={classes.topAlignSection}>
                 <Avatar
                     alt={currentMember.firstName + " " + currentMember.lastName}

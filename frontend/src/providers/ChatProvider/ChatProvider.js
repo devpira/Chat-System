@@ -4,6 +4,7 @@ import { CurrentMemberContext } from '../../shared/CurrentMember'
 import { LOAD_CHAT_LIST, CHAT_MESSAGE_RECEIVED } from '../../shared/SocketIo/Events'
 import LoadingScreen from '../../shared/LoadingScreen'
 import Moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 import { notification } from 'antd';
 import Avatar from '@material-ui/core/Avatar';
@@ -26,8 +27,10 @@ export const ChatProvider = ({ children }) => {
 
     const [pending, setPending] = useState(true);
 
-    const openNotification = (name, imageUrl, message) => {
+    const openNotification = (name, imageUrl, message, newChatRoom) => {
+        const key = uuidv4()
         notification.open({
+            key,
             message: <div style={{ display: "flex", marginRight: "10px" }}>
                 <Avatar style={{ width: "30px", height: "30px", marginRight: "10px" }} src={imageUrl} >
                     <PersonIcon />
@@ -38,18 +41,16 @@ export const ChatProvider = ({ children }) => {
                 <div style={{ marginLeft: "10px", marginRight: "10px" }}>{message}</div>,
 
             onClick: () => {
-                console.log('Notification Clicked!');
+                setCurrentChatRoom(newChatRoom);
+                notification.close(key)
             },
         });
     };
 
     useEffect(() => {
 
-        if (!socket.hasListeners("LOAD_CHAT_LIST")) {
-
-            socket.on("LOAD_CHAT_LIST", (chatList) => {
-
-                console.log(LOAD_CHAT_LIST, chatList)
+        if (!socket.hasListeners(LOAD_CHAT_LIST)) {
+            socket.on(LOAD_CHAT_LIST, (chatList) => {
                 setChatRooms(chatList);
                 if (chatList.length > 0) {
                     setCurrentChatRoom(chatList[0])
@@ -61,8 +62,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners(CHAT_MESSAGE_RECEIVED)) {
             socket.on(CHAT_MESSAGE_RECEIVED, (receviedMessage) => {
-                console.log("CHAT_MESSAGE_RECEIVED", receviedMessage);
-
                 const roomId = receviedMessage.roomId;
                 const chatRoom = currentChatRooms.current.filter((item) => item.roomId === roomId)
                 const index = currentChatRooms.current.findIndex((item) => item.roomId === roomId)
@@ -86,8 +85,9 @@ export const ChatProvider = ({ children }) => {
                 if (currentChatRoomRef.current.roomId === newChatRoom.roomId) {
                     setCurrentChatRoom(newChatRoom)
                 } else {
-                    if(newChatRoom.type  === "chat")
-                    openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message);
+                    if (newChatRoom.type === "chat") {
+                        openNotification(receviedMessage.name, receviedMessage.imageUrl, receviedMessage.message, newChatRoom);
+                    }
                 }
 
             })
@@ -95,7 +95,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("ON_NEW_CHAT_ROOM_CREATED")) {
             socket.on("ON_NEW_CHAT_ROOM_CREATED", (createdChatRoom) => {
-                console.log("ON_NEW_CHAT_ROOM_CREATED", createdChatRoom);
                 setChatRooms([createdChatRoom, ...currentChatRooms.current])
                 setCurrentChatRoom(createdChatRoom)
             })
@@ -103,18 +102,15 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("ON_NEW_CHAT_ROOM_CREATED_FAILED")) {
             socket.on("ON_NEW_CHAT_ROOM_CREATED_FAILED", (errorMessage) => {
-                console.log("ON_NEW_CHAT_ROOM_CREATED_FAILED", errorMessage);
                 // TO-DO - show error to user!
             })
         }
 
         if (!socket.hasListeners("SEND_REQUEST_TO_JOIN_CHAT_ROOM")) {
             socket.on("SEND_REQUEST_TO_JOIN_CHAT_ROOM", (chatRoom) => {
-                console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM", chatRoom);
                 //first check if room already exists:
                 const existChatRoom = currentChatRooms.current.filter((item) => item.roomId === chatRoom.roomId)
                 if (existChatRoom.length > 0) {
-                    console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_1");
                     // TO-DO - This part of is similar to CHAT_MESSAGE_RECEIVED. Should create common function.
                     const index = currentChatRooms.current.findIndex((item) => item.roomId === chatRoom.roomId)
                     let newChatRooms = [...currentChatRooms.current];
@@ -130,9 +126,8 @@ export const ChatProvider = ({ children }) => {
                     setChatRooms(newChatRooms)
                     return;
                 } else {
-                    console.log("SEND_REQUEST_TO_JOIN_CHAT_ROOM_noooooooooo");
                     setChatRooms([chatRoom, ...currentChatRooms.current])
-                    openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message);
+                    openNotification(chatRoom.chatMessages[0].name, chatRoom.chatMessages[0].imageUrl, chatRoom.chatMessages[0].message, chatRoom);
                 }
 
                 socket.emit("REQUEST_TO_JOIN_CHAT_ROOM", chatRoom.roomId);
@@ -141,7 +136,6 @@ export const ChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("REQUEST_TO_JOIN_CHAT_ROOM_FAILED")) {
             socket.on("REQUEST_TO_JOIN_CHAT_ROOM_FAILED", (roomId, errorMessage) => {
-                console.log("REQUEST_TO_JOIN_CHAT_ROOM_FAILED", errorMessage);
                 // remove room Id we added, earlier just in case:
                 setChatRooms(currentChatRooms.current.filter((room) => room.id !== roomId));
                 // TO-DO - show error to user!
@@ -172,7 +166,6 @@ export const ChatProvider = ({ children }) => {
     }
 
     const createPreChat = (member) => {
-        console.log("CREATE CHAT", member)
         const memberId = member.id;
 
         // Check to see if chat room already exists:
@@ -199,20 +192,20 @@ export const ChatProvider = ({ children }) => {
         setCurrentChatRoom(newChat)
     }
 
-    const generateNewChatMessage = (message) => {
+    const generateNewChatMessage = (message, type) => {
         return {
             uid:
                 currentMember.id,
             name: currentMember.fullName,
             roomId: currentChatRoom.roomId,
             imageUrl: currentMember.largeImageUrl,
+            type,
             time: Moment().format(),
             message,
         }
     }
 
-    const sendNewChatRoomRequest = (initalMessage) => {
-        console.log("initalMessage0", initalMessage);
+    const sendNewChatRoomRequest = (initalMessage, type) => {
         const toUser = currentChatRoom.participants.filter((item) => item.id !== currentMember.id)[0];
         let roomId;
         if (toUser.id > currentMember.id) {
@@ -220,7 +213,7 @@ export const ChatProvider = ({ children }) => {
         } else {
             roomId = currentMember.id + "-" + toUser.id;
         }
-        const chatMessage = generateNewChatMessage(initalMessage);
+        const chatMessage = generateNewChatMessage(initalMessage, type);
         const chatRoom = { ...currentChatRoom, roomId, chatMessages: [chatMessage] }
         socket.emit("CREATE_NEW_CHAT_ROOM", toUser.id, roomId, chatRoom)
     }
@@ -228,11 +221,30 @@ export const ChatProvider = ({ children }) => {
     const sendChatMessage = (message) => {
         if (message) {
             if (currentChatRoom.roomId) {
-                socket.emit("CHAT_MESSAGE_SEND", generateNewChatMessage(message));
+                socket.emit("CHAT_MESSAGE_SEND", generateNewChatMessage(message, "message"));
             } else {
-                sendNewChatRoomRequest(message);
+                sendNewChatRoomRequest(message, "message");
             }
         }
+    }
+
+    const sendCoffeeChatMessage = () => {
+        /// THIS WHOLE FUNCTION IS HACK COFFEE CHAT SENDING, SHOULD BE DELETED.
+        const toUser = { id: 12429996, fullName: "P̶J̶ ira ♕ Suriyakumaran", largeImageUrl: "https://over.localhost.achievers.com/platform_content/shard_1/ilr/public/user/12429996/KC4jUk85M05TLjYk/icon_med.jpg?1550353617" }
+        if (toUser.id === currentMember.id) {
+            return
+        }
+        const newRoom = generateNewChatRoom(toUser)
+        let roomId;
+        if (toUser.id > currentMember.id) {
+            roomId = toUser.id + "-" + currentMember.id;
+        } else {
+            roomId = currentMember.id + "-" + toUser.id;
+        }
+
+        const chatMessage = generateNewChatMessage("NEW COFFEE CHAT HAS ARRIVED!", "coffee-chat");
+        const chatRoom = { ...newRoom, roomId, chatMessages: [chatMessage] }
+        socket.emit("CREATE_NEW_CHAT_ROOM", toUser.id, roomId, chatRoom)
     }
 
     if (pending) {
@@ -249,7 +261,8 @@ export const ChatProvider = ({ children }) => {
                     chatRooms,
                     createPreChat,
                     sendChatMessage,
-                    currentMemberId: currentMember.id
+                    currentMemberId: currentMember.id,
+                    sendCoffeeChatMessage
                 }
             }
         >

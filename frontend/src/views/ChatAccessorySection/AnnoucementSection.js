@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         scrollbarColor: theme.palette.primary.main,
         scrollbarWidth: "1px",
         '&::-webkit-scrollbar': {
-            width: '0.8em'
+            width: '0.4em'
         },
         '&::-webkit-scrollbar-track': {
             boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
@@ -50,8 +50,7 @@ const AnnouncementSection = ({ value, index }) => {
 
     useEffect(() => {
         if (oAuthToken) {
-            console.log(oAuthToken)
-            axios.get("https://over.localhost.achievers.com/api/v5/announcements",
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/announcements`,
                 {
                     headers: {
                         //'Content-Type': 'application/json',
@@ -59,7 +58,6 @@ const AnnouncementSection = ({ value, index }) => {
                     }
                 }).then(function (response) {
                     if (response.data && response.data.items) {
-                        console.log("AnnouncementCard", response.data)
                         setAnnouncementsList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load announcements. Please reload the page and try again.")

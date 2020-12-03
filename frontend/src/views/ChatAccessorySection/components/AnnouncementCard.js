@@ -50,7 +50,7 @@ const AnnouncementCard = ({ announcement }) => {
         <ListItem >
             <Card className={classes.root}>
                 {announcement.fileUpload && announcement.fileUpload.url &&
-                    <img src={announcement.fileUpload.url.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
+                    <img src={!process.env.REACT_APP_CAN_LOAD_IMAGE === 'true' ? announcement.fileUpload.url : announcement.fileUpload.url.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
                 }
 
                 <CardContent>

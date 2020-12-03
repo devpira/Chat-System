@@ -41,12 +41,12 @@ export const VideoChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("VIDEO_CALL_USER_ANSWER_REQUEST")) {
             socket.on("VIDEO_CALL_USER_ANSWER_REQUEST", (myInfo) => {
-                console.log("VIDEO_CALL_USER_ANSWER_REQUEST", myInfo)
+
                 if (onCallRef.current) {
                     socket.emit("VIDEO_CALL_USER_DECLINE", myInfo.id);
                     return;
                 }
-                console.log("VIDEO_CALL_USER_ANSWER_REQUEST", myInfo)
+
                 setCallingMember(myInfo);
                 setIsCallIncoming(true);
             })
@@ -54,8 +54,6 @@ export const VideoChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("VIDEO_CALL_USER_DECLINE_NOTIFY")) {
             socket.on("VIDEO_CALL_USER_DECLINE_NOTIFY", (myId) => {
-                console.log("VIDEO_CALL_USER_DECLINE_NOTIFY")
-
                 if (isCallingRef.current && callingMemberRef.current && callingMemberRef.current.id === myId) {
                     endCallingUser();
                 }
@@ -65,8 +63,6 @@ export const VideoChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("VIDEO_CALL_USER_ANSWER_NOTIFY")) {
             socket.on("VIDEO_CALL_USER_ANSWER_NOTIFY", (myId) => {
-                console.log("VIDEO_CALL_USER_ANSWER_NOTIFY")
-
                 startVideoCall(myId)
             })
         }
@@ -74,14 +70,12 @@ export const VideoChatProvider = ({ children }) => {
 
         if (!socket.hasListeners("VIDEO_CALL_START_STREAM_START")) {
             socket.on('VIDEO_CALL_START_STREAM_START', userId => {
-                console.log("VIDEO_CALL_START_STREAM_START")
                 setCallingStreamerId(userId)
             })
         }
 
         if (!socket.hasListeners("VIDEO_CALL_END_STREAM")) {
             socket.on('VIDEO_CALL_END_STREAM', callerId => {
-                console.log("VIDEO_CALL_END_STREAM")
                 if (callerId && callingMemberRef.current && callerId === callingMemberRef.current.id) {
                     endVideoCall(true);
                 }
@@ -126,10 +120,9 @@ export const VideoChatProvider = ({ children }) => {
 
     const startVideoCall = (userId) => {
         setOnCall(true);
-        const connection = new Peer({ host: 'localhost', port: 9000, path: '/peerjs' })
+        const connection = new Peer({ host: process.env.REACT_APP_PEER_HOST, port: process.env.REACT_APP_PEER_PORT, path: '/peerjs' })
 
         connection.on('open', id => {
-            console.log("Peer connection opned: ", id)
             socket.emit("VIDEO_CALL_START_STREAM_REQUEST", userId, id);
         })
         setPeerConnection(connection);
@@ -142,8 +135,13 @@ export const VideoChatProvider = ({ children }) => {
 
         if (peerConnectionRef.current) {
             peerConnectionRef.current.disconnect();
+        }
+
+        if (peerConnectionRef.current) {
+            //Just in case disconnect didn't kill the connection.
             peerConnectionRef.current.destroy();
         }
+
         setPeerConnection(null);
         setCallingStreamerId(null);
         setCallingMember(null);
