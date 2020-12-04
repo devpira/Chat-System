@@ -15,7 +15,6 @@ import ChatTopBarTab from './ChatTopBarTab';
 import { OnlineBadge, OfflineBadge } from '../../../shared/Components'
 
 import { VideoChatContext } from '../../../providers/VideoChatProvider';
-import { ChatContext } from '../../../providers/ChatProvider';
 
 const useStyles = makeStyles(theme => ({
     root: {

@@ -8,6 +8,11 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 onlineUsers = [];
 
+//THIS IS HACK, MUST USE DATABASE ---START
+liveChats = []
+
+//THIS IS HACK, MUST USE DATABASE ---END
+
 const {
     isValidChatRoomCreation,
     isValidJoinChatRoomRequest,
@@ -56,12 +61,28 @@ io.use(async (socket, next) => {
 
     socket.join(socket.uid)
 
+    //HACKER SOULTION DELETE LATER: 
+    myChat = []
+    liveChats.forEach((item) => {
+        if (item.roomId && item.chatRoom) {
+            const participantIds = item.roomId.split("-");
 
+            if (participantIds && participantIds.length === 2) {
+                const hasMyId = socket.uid == participantIds[0] || socket.uid == participantIds[1]
+                if (hasMyId) {
+                    socket.join(item.roomId)
+                    myChat.push(item.chatRoom)
+                }
+            }
+        }
+    })
+    console.log("PASSED")
+    //HACKER SOULTION DELETE LATER -- end
 
     io.to(socket.id).emit("LOAD_CHAT_LIST",
-        [generateGeneralChatRoom(socket), ...generateDepartmentChatRoom(socket, socket.currentMember)]
+        [generateGeneralChatRoom(socket), ...generateDepartmentChatRoom(socket, socket.currentMember), ...myChat]
     );
-
+    console.log("PASSED")
     // Let other users know you are online:
     onlineUsers.push(socket.uid)
     io.emit("USER_ONLINE_LIST_UPDATE", onlineUsers);
@@ -80,6 +101,11 @@ io.use(async (socket, next) => {
             io.to(socket.id).emit("ON_NEW_CHAT_ROOM_CREATED_FAILED", "Invalid chat room creation.")
             return
         }
+
+        //HACKER SOULTION DELETE LATER: 
+        liveChats = [...liveChats, { roomId, chatRoom }]
+        //HACKER SOULTION DELETE LATER -- end
+
         socket.join(roomId)
         io.to(socket.id).emit("ON_NEW_CHAT_ROOM_CREATED", chatRoom)
         io.in(toUserId).emit("SEND_REQUEST_TO_JOIN_CHAT_ROOM", chatRoom)
