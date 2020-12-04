@@ -72,7 +72,9 @@ const RecoSection = ({ value, index }) => {
         <TabPanel value={value} index={index} className={classes.root}>
             <List >
                 {recoList.map((item, index) => {
-                    return <RecoCard key={index} reco={item} />
+                    if (item.creator.name) {
+                        return <RecoCard key={index} reco={item} />
+                    }
                 })}
             </List>
         </TabPanel>

@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const RecoCard = ({ reco }) => {
+const RecoHighlight = ({ reco }) => {
     const classes = useStyles();
 
     const [expanded, setExpanded] = React.useState(false);
@@ -60,36 +60,6 @@ const RecoCard = ({ reco }) => {
     return (
         <ListItem >
             <Card className={classes.root}>
-                <CardHeader
-                    className={classes.header}
-                    avatar={
-                        <div className={classes.creatorProfile}>
-                            <AvatarGroup max={5}>
-                                {reco.participants.map((person, index) => {
-                                    return <Avatar key={index} alt={person.name} src={person.profileImageUrl} className={classes.avatar} />
-                                })}
-                            </AvatarGroup>
-                            <Typography variant="body2" component="p" className={classes.participantsName} noWrap>
-                                <strong>{reco.participants.map((item, index) => {
-                                    if (index === reco.participants.length - 1) {
-                                        return item.name
-                                    } else {
-                                        return item.name + ", "
-                                    }
-                                })}</strong>
-                            </Typography>
-                        </div>
-                    }
-                    action={
-                        <IconButton aria-label="share">
-                            <ShareIcon color="primary" />
-                        </IconButton>
-                    }
-
-                />
-                {reco.creator.name && 
-                    <img src={!process.env.REACT_APP_CAN_LOAD_IMAGE === 'true' ? reco.imageHref : reco.imageHref.replace("https://over.localhost.achievers.com/", "https://over.achievers.com/")} className={classes.image}></img>
-                }
                 <CardContent>
                     {reco.creator.profileImageUrl &&
                         <div className={classes.creatorProfile}>
@@ -141,4 +111,4 @@ const RecoCard = ({ reco }) => {
     );
 }
 
-export default RecoCard;
+export default RecoHighlight;

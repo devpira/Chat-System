@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Paper, IconButton } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx'
@@ -13,8 +12,9 @@ import ImageIcon from '@material-ui/icons/Image';
 import ChatTopBarTabs from './ChatTopBarTabs';
 import ChatTopBarTab from './ChatTopBarTab';
 
+import { OnlineBadge, OfflineBadge } from '../../../shared/Components'
+
 import { VideoChatContext } from '../../../providers/VideoChatProvider';
-import { ChatContext } from '../../../providers/ChatProvider';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -59,9 +59,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const Topbar = ({ className, sendCoffeeChatMessage, participant, tabIndex, handleTabIndexChange }) => {
+const Topbar = ({ className, onlineUsers, sendCoffeeChatMessage, participant, tabIndex, handleTabIndexChange }) => {
     const classes = useStyles();
     const { startCallingUser } = useContext(VideoChatContext)
+
+    const [showOnline, setShowOnline] = useState(false);
 
     const videoCallUser = () => {
         startCallingUser(participant.id, participant.name, participant.imageUrl)
@@ -72,22 +74,55 @@ const Topbar = ({ className, sendCoffeeChatMessage, participant, tabIndex, handl
             window.open(process.env.REACT_APP_OVER_URL + "/profile/" + id)
         }
     }
+
+    useEffect(() => {
+        console.log("PARREN: ", participant.id)
+        if (onlineUsers && onlineUsers.length > 1 && participant.id) {
+            setShowOnline(onlineUsers.includes(participant.id))
+        } else {
+            setShowOnline(false);
+        }
+    }, [onlineUsers, participant])
+    console.log("onlineUsers", onlineUsers)
     return (
         <Paper
             className={clsx(classes.root, className)}
         >
             <div className={classes.topAlignSection}>
-                <Avatar onClick={() => openUserProfile(participant.id)} src={participant.imageUrl} className={classes.avatar}>
-                    <ImageIcon />
-                </Avatar>
+                {participant.id ? <> {showOnline ? <OnlineBadge
+                    overlap="circle"
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    variant="dot"
+                >
+                    <Avatar onClick={() => openUserProfile(participant.id)} src={participant.imageUrl} className={classes.avatar}>
+                        <ImageIcon />
+                    </Avatar>
+                </OnlineBadge>
+                    :
+                    <OfflineBadge
+                        overlap="circle"
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        variant="dot"
+                    >
+                        <Avatar onClick={() => openUserProfile(participant.id)} src={participant.imageUrl} className={classes.avatar}>
+                            <ImageIcon />
+                        </Avatar>
+                    </OfflineBadge>
+                }</> :
+
+                    <Avatar onClick={() => openUserProfile(participant.id)} src={participant.imageUrl} className={classes.avatar}>
+                        <ImageIcon />
+                    </Avatar>
+                }
                 <Typography onClick={() => openUserProfile(participant.id)} variant="h5" className={classes.title}>
                     <strong>{participant.name}</strong>
                 </Typography>
-                {/* {participant.id && <Button disableElevation color="primary" className={classes.recoButton}>Chat</Button>}
-                {participant.id && <Button disableElevation color="primary" onClick={() => window.open(process.env.REACT_APP_OVER_URL + "/recognize/entry/cta/user/" + participant.id)} className={classes.highlightsButton}>Recognize</Button>}
-                {participant.id && <Button disableElevation color="primary" className={classes.highlightsButton}>Highlights</Button>}
-                {participant.id && <Button disableElevation color="primary" className={classes.highlightsButton}>1 ON 1</Button>}
-                {participant.id && <Button disableElevation color="primary" className={classes.highlightsButton}>Mentorship</Button>} */}
                 {participant.id && <ChatTopBarTabs className={classes.tabs} value={tabIndex} onChange={handleTabIndexChange} aria-label="chat accessory tabs">
                     <ChatTopBarTab label="Chat" />
                     <ChatTopBarTab label="Highlights" />

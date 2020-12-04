@@ -25,6 +25,8 @@ export const ChatProvider = ({ children }) => {
     const currentChatRooms = useRef();
     currentChatRooms.current = chatRooms;
 
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
     const [pending, setPending] = useState(true);
 
     const openNotification = (name, imageUrl, message, newChatRoom) => {
@@ -48,6 +50,13 @@ export const ChatProvider = ({ children }) => {
     };
 
     useEffect(() => {
+
+        if (!socket.hasListeners("USER_ONLINE_LIST_UPDATE")) {
+            socket.on("USER_ONLINE_LIST_UPDATE", (onlineUsers) => {
+                console.log(onlineUsers)
+                setOnlineUsers(onlineUsers)
+            })
+        }
 
         if (!socket.hasListeners(LOAD_CHAT_LIST)) {
             socket.on(LOAD_CHAT_LIST, (chatList) => {
@@ -262,7 +271,8 @@ export const ChatProvider = ({ children }) => {
                     createPreChat,
                     sendChatMessage,
                     currentMemberId: currentMember.id,
-                    sendCoffeeChatMessage
+                    sendCoffeeChatMessage,
+                    onlineUsers
                 }
             }
         >
