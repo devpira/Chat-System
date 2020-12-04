@@ -4,8 +4,8 @@ import { TabPanel } from '../../../../shared/Components'
 import { Tree } from 'antd';
 import Typography from '@material-ui/core/Typography'
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import Paper from '@material-ui/core/paper';
-import Button from '@material-ui/core/button';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
