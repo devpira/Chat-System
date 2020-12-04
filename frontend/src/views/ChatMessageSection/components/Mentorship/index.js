@@ -45,7 +45,7 @@ const MentorShip = ({ value, index, currentMember, otherParticipant }) => {
         <TabPanel value={value} index={index} className={classes.root}>
             <div className={classes.body} elevation={2} >
                 <Typography variant="h2" component="h2" className={classes.emptyText} >
-                    Coming Soon!
+                    It's a Surpise 😉 <br></br> Coming Next Hackathon!
                     </Typography>
             </div>
         </TabPanel>
