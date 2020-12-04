@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { TabPanel } from '../../../../shared/Components'
+import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         display: "flex",
         flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
         paddingLeft: theme.spacing(5),
         paddingRight: theme.spacing(5),
         overflowY: "auto",
@@ -41,7 +44,9 @@ const MentorShip = ({ value, index, currentMember, otherParticipant }) => {
     return (
         <TabPanel value={value} index={index} className={classes.root}>
             <div className={classes.body} elevation={2} >
-
+                <Typography variant="h2" component="h2" className={classes.emptyText} >
+                    Coming Soon!
+                    </Typography>
             </div>
         </TabPanel>
     );

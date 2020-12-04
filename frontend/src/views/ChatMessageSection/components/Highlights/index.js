@@ -1,6 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { TabPanel } from '../../../../shared/Components'
+import { AuthContext } from '../../../../shared/Authentication'
+import axios from 'axios'
+import List from '@material-ui/core/List';
+import RecoHighlight from './component/RecoHighlight'
+import Moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,10 +42,47 @@ const useStyles = makeStyles((theme) => ({
 
 const Highlights = ({ value, index, currentMember, otherParticipant }) => {
     const classes = useStyles();
+    const { oAuthToken } = useContext(AuthContext);
+
+    const [highlightlist, setHighLightList] = useState([])
+    const [error, setError] = useState();
+
+    useEffect(() => {
+        if (oAuthToken && otherParticipant.id) {
+            axios.get(`${process.env.REACT_APP_OVER_URL}/api/v5/newsfeed-events`,
+                {
+                    params: {
+                        userId: otherParticipant.id,
+                        useUserIds: true,
+                    },
+                    headers: {
+                        //'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${oAuthToken}`,
+                    }
+                }).then(function (response) {
+                    if (response.data && response.data.items) {
+                        console.log(response.data.items)
+                        setHighLightList(response.data.items)
+                    } else {
+                        setError("Unexpected error occurred while trying to load recognitions. Please reload the page and try again.")
+                    }
+                }).catch(function (error) {
+                    setError("Unexpected error occurred while trying to load recognitions. Please reload the page and try again.")
+                });
+        }
+    }, [otherParticipant]);
 
     return (
         <TabPanel value={value} index={index} className={classes.root}>
             <div className={classes.body} elevation={2} >
+
+                <List >
+                    {highlightlist.map((item, index) => {
+                        if (item.eventType === "recognition" && item.creator.id != otherParticipant.id) {
+                            return <RecoHighlight key={index} reco={item} />
+                    }
+                })}
+                </List>
 
             </div>
         </TabPanel>

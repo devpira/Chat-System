@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import axios from 'axios'
 import { AuthContext } from '../../shared/Authentication'
 import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography'
 import AnnouncementCard from './components/AnnouncementCard'
 import { TabPanel } from '../../shared/Components'
 
@@ -38,6 +39,17 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(2),
         marginBottom: theme.spacing(2),
     },
+    emptyDiv: {
+        width: '100%',
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    emptyText: {
+        textAlign: "center",
+        marginTop: theme.spacing(15),
+    }
 
 }));
 
@@ -70,11 +82,17 @@ const AnnouncementSection = ({ value, index }) => {
 
     return (
         <TabPanel value={value} index={index} className={classes.root}>
-            <List >
-                {announcementsList.map((item, index) => {
-                    return <AnnouncementCard key={index} announcement={item} />
-                })}
-            </List>
+            {announcementsList.length < 1 ? <div className={classes.emptyDiv}>
+                <Typography variant="h5" component="h2" className={classes.emptyText} >
+                    There are currently no Annoucements
+                    </Typography>
+            </div> :
+                <List >
+                    {announcementsList.map((item, index) => {
+                        return <AnnouncementCard key={index} announcement={item} />
+                    })}
+                </List>
+            }
         </TabPanel>
     );
 }
