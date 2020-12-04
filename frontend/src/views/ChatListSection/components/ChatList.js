@@ -8,6 +8,8 @@ import PersonIcon from '@material-ui/icons/Person';
 
 import { ChatContext } from '../../../providers/ChatProvider'
 
+import { OnlineBadge, OfflineBadge } from '../../../shared/Components'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '110%',
@@ -23,14 +25,16 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(5.5),
         height: theme.spacing(5.5),
         marginLeft: theme.spacing(2.5),
-        marginRight: theme.spacing(2)
+    },
+    text: {
+        marginLeft: theme.spacing(2),
     }
 }));
 
 const ChatList = () => {
     const classes = useStyles();
 
-    const { setCurrentChatRoom, chatRooms, currentMemberId } = useContext(ChatContext);
+    const { setCurrentChatRoom, chatRooms, currentMemberId, onlineUsers } = useContext(ChatContext);
 
     return (
         <List className={classes.root}>
@@ -40,15 +44,40 @@ const ChatList = () => {
 
                     {item.participants.map((participant, index) => {
                         if (participant.id !== currentMemberId) {
-                            return <Avatar key={index} src={participant.imageUrl} className={classes.avatar}>
-                                <PersonIcon />
-                            </Avatar>
+                            if (onlineUsers.includes(participant.id)) {
+                                return <OnlineBadge
+                                    overlap="circle"
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    variant="dot"
+                                >
+                                    <Avatar key={index} src={participant.imageUrl} className={classes.avatar}>
+                                        <PersonIcon />
+                                    </Avatar>
+                                </OnlineBadge>
+                            } else {
+                                return <OfflineBadge
+                                    overlap="circle"
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    variant="dot"
+                                >
+                                    <Avatar key={index} src={participant.imageUrl} className={classes.avatar}>
+                                        <PersonIcon />
+                                    </Avatar>
+                                </OfflineBadge>
+                            }
+
                         }
                     })}
 
                     {item.participants.map((participant, index) => {
                         if (participant.id !== currentMemberId) {
-                            return <ListItemText key={index} primary={<strong>{participant.name}</strong>} secondary={item.chatMessages.length > 0 ? item.chatMessages[item.chatMessages.length - 1].message : ""} />
+                            return <ListItemText className={classes.text} key={index} primary={<strong>{participant.name}</strong>} secondary={item.chatMessages.length > 0 ? item.chatMessages[item.chatMessages.length - 1].message : ""} />
 
                         }
                     })}

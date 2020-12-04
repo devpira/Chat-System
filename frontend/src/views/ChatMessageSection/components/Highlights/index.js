@@ -61,7 +61,6 @@ const Highlights = ({ value, index, currentMember, otherParticipant }) => {
                     }
                 }).then(function (response) {
                     if (response.data && response.data.items) {
-                        console.log(response.data.items)
                         setHighLightList(response.data.items)
                     } else {
                         setError("Unexpected error occurred while trying to load recognitions. Please reload the page and try again.")

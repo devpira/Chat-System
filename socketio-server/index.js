@@ -6,6 +6,8 @@ require('isomorphic-fetch');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
+onlineUsers = [];
+
 const {
     isValidChatRoomCreation,
     isValidJoinChatRoomRequest,
@@ -54,9 +56,15 @@ io.use(async (socket, next) => {
 
     socket.join(socket.uid)
 
+
+
     io.to(socket.id).emit("LOAD_CHAT_LIST",
         [generateGeneralChatRoom(socket), ...generateDepartmentChatRoom(socket, socket.currentMember)]
     );
+
+    // Let other users know you are online:
+    onlineUsers.push(socket.uid)
+    io.emit("USER_ONLINE_LIST_UPDATE", onlineUsers);
 
     socket.on("CHAT_MESSAGE_SEND", (message) => {
         console.log(message)
@@ -125,6 +133,19 @@ io.use(async (socket, next) => {
 
         io.to(userId).emit("VIDEO_CALL_END_STREAM", myId)
     })
+
+    socket.on('disconnect', () => {
+        console.log("User diconnected: ", socket.uid)
+
+        // Let other users know you are  NOT online:
+        var index = onlineUsers.indexOf(socket.uid);
+        if (index !== -1) {
+            onlineUsers.splice(index, 1);
+        }
+
+        io.emit("USER_ONLINE_LIST_UPDATE", onlineUsers);
+
+    });
 });
 
 server.listen(PORT, () => {

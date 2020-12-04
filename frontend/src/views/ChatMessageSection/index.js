@@ -67,7 +67,7 @@ const ChatMessageSection = () => {
     const classes = useStyles();
     const messagesEndRef = useRef(null)
 
-    const { currentChatRoom, chatRooms, sendChatMessage, sendCoffeeChatMessage } = useContext(ChatContext);
+    const { currentChatRoom, chatRooms, sendChatMessage, sendCoffeeChatMessage, onlineUsers } = useContext(ChatContext);
     const { currentMember } = useContext(CurrentMemberContext);
     const [otherParticipant, setOtherParticipant] = useState();
 
@@ -106,7 +106,13 @@ const ChatMessageSection = () => {
         <div ref={ref => connect(drag(ref))} className={classes.root} >
             {currentChatRoom && chatRooms.length > 0 && otherParticipant ?
                 <Paper className={classes.content} elevation={2} >
-                    <Topbar participant={otherParticipant} tabIndex={tabIndex}  sendCoffeeChatMessage={sendCoffeeChatMessage} handleTabIndexChange={handleTabIndexChange} />
+                    <Topbar
+                        participant={otherParticipant}
+                        tabIndex={tabIndex}
+                        sendCoffeeChatMessage={sendCoffeeChatMessage}
+                        handleTabIndexChange={handleTabIndexChange}
+                        onlineUsers={onlineUsers}
+                    />
                     {!otherParticipant.id ? <>
                         <div className={classes.body} elevation={2} >
                             <div ref={messagesEndRef}>
