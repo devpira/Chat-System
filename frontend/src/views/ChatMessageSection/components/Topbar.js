@@ -136,9 +136,9 @@ const Topbar = ({ className, onlineUsers, sendCoffeeChatMessage, participant, ta
                 </IconButton>
                 }
                 {/* {This part is to hack coffee chat sending. Should be deleted in future:} */}
-                {/* <IconButton aria-label="options" color="primary" onClick={sendCoffeeChatMessage}>
+                <IconButton aria-label="options" color="primary" onClick={sendCoffeeChatMessage}>
                     <MoreVertIcon className={classes.icon} />
-                </IconButton> */}
+                </IconButton>
 
             </div>
 
